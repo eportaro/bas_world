@@ -1,0 +1,56 @@
+# =============================================================================
+# BAS World Tractor Head Finder — Docker Compose
+#
+# Services:
+#   - chatbot-api:  FastAPI application (main chatbot)
+#   - localstack:   AWS emulation for Terraform demo
+#
+# Usage:
+#   Full stack:      docker-compose up -d
+#   API only:        docker-compose up -d chatbot-api
+#   LocalStack only: docker-compose up -d localstack
+# =============================================================================
+
+version: "3.8"
+
+services:
+  # --------------------------------------------------------------------------
+  # Chatbot API — Main application
+  # --------------------------------------------------------------------------
+  chatbot-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bas-world-chatbot
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # --------------------------------------------------------------------------
+  # LocalStack — AWS emulation for Terraform
+  # --------------------------------------------------------------------------
+  localstack:
+    image: localstack/localstack:latest
+    container_name: bas-world-localstack
+    ports:
+      - "4566:4566"      # Gateway
+      - "4510-4559:4510-4559"  # Service ports
+    environment:
+      - SERVICES=s3,ecs,ecr,iam,apigateway,logs
+      - DEBUG=0
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    volumes:
+      - localstack_data:/var/lib/localstack
+      - /var/run/docker.sock:/var/run/docker.sock
+
+volumes:
+  localstack_data:

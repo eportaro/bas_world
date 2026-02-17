@@ -1,0 +1,200 @@
+"""
+FastAPI backend for the BAS World Tractor Head Finder chatbot.
+Exposes REST API endpoints for chat, inventory browsing, and health checks.
+"""
+
+from __future__ import annotations
+
+import json
+import uuid
+from contextlib import asynccontextmanager
+from pathlib import Path
+
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from langchain_core.messages import HumanMessage
+
+from app.agents.graph import get_compiled_graph
+from app.schemas.schemas import ChatRequest, ChatResponse, VehicleCard
+from app.services.data_loader import load_inventory, get_vehicle_by_id
+from app.tools.search_inventory import search_inventory_direct
+from app.schemas.schemas import SearchFilters
+
+# ---------------------------------------------------------------------------
+# App lifespan
+# ---------------------------------------------------------------------------
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Startup / shutdown events."""
+    # Load inventory on startup
+    load_inventory()
+    print("[OK] Inventory loaded successfully")
+    yield
+
+
+# ---------------------------------------------------------------------------
+# FastAPI app
+# ---------------------------------------------------------------------------
+
+app = FastAPI(
+    title="BAS World Tractor Head Finder",
+    description="AI-powered chatbot for finding the perfect tractor head",
+    version="1.0.0",
+    lifespan=lifespan,
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Serve static frontend files
+FRONTEND_DIR = Path(__file__).resolve().parent.parent.parent / "frontend"
+
+# ---------------------------------------------------------------------------
+# Graph singleton
+# ---------------------------------------------------------------------------
+
+_graph = None
+
+
+def get_graph():
+    global _graph
+    if _graph is None:
+        _graph = get_compiled_graph()
+    return _graph
+
+
+# ---------------------------------------------------------------------------
+# API Endpoints
+# ---------------------------------------------------------------------------
+
+@app.get("/health")
+async def health_check():
+    """Health check endpoint."""
+    return {"status": "healthy", "service": "bas-world-chatbot"}
+
+
+@app.post("/chat", response_model=ChatResponse)
+async def chat(request: ChatRequest):
+    """Main chat endpoint — processes user messages through the multi-agent system."""
+    graph = get_graph()
+
+    config = {"configurable": {"thread_id": request.session_id}}
+
+    try:
+        result = graph.invoke(
+            {"messages": [HumanMessage(content=request.message)], "session_id": request.session_id},
+            config=config,
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Agent error: {str(e)}")
+
+    # Extract the last AI message
+    ai_messages = [m for m in result["messages"] if m.type == "ai" and m.content]
+    if not ai_messages:
+        response_text = "I apologize, but I couldn't process your request. Could you please rephrase?"
+    else:
+        response_text = ai_messages[-1].content
+
+    # Extract vehicle cards from tool call results
+    vehicles = _extract_vehicle_cards(result["messages"])
+
+    return ChatResponse(
+        session_id=request.session_id,
+        message=response_text,
+        vehicles=vehicles,
+    )
+
+
+@app.get("/inventory/{vehicle_id}")
+async def get_inventory_item(vehicle_id: int):
+    """Get a specific vehicle by ID."""
+    vehicle = get_vehicle_by_id(vehicle_id)
+    if not vehicle:
+        raise HTTPException(status_code=404, detail=f"Vehicle {vehicle_id} not found")
+    return vehicle.model_dump()
+
+
+@app.get("/inventory")
+async def list_inventory(
+    brand: str | None = None,
+    configuration: str | None = None,
+    euro: int | None = None,
+    gearbox: str | None = None,
+    min_price: float | None = None,
+    max_price: float | None = None,
+    min_power: int | None = None,
+    limit: int = 20,
+):
+    """List/filter inventory with query parameters."""
+    filters = SearchFilters(
+        brand=brand,
+        configuration=configuration,
+        euro=euro,
+        gearbox=gearbox,
+        min_price=min_price,
+        max_price=max_price,
+        min_power=min_power,
+        limit=limit,
+    )
+    results = search_inventory_direct(filters)
+    return {
+        "count": len(results),
+        "vehicles": [v.model_dump() for v in results],
+    }
+
+
+@app.get("/", response_class=HTMLResponse)
+async def serve_frontend():
+    """Serve the chat frontend."""
+    index_path = FRONTEND_DIR / "index.html"
+    if index_path.exists():
+        return FileResponse(index_path)
+    return HTMLResponse("<h1>BAS World Chatbot API</h1><p>Frontend not found. Use /docs for API documentation.</p>")
+
+
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
+def _extract_vehicle_cards(messages) -> list[VehicleCard]:
+    """Extract vehicle data from tool call results in the message history."""
+    cards = []
+    seen_ids = set()
+
+    for msg in messages:
+        if msg.type == "tool" and msg.name == "search_inventory":
+            try:
+                data = json.loads(msg.content)
+                for v in data.get("vehicles", []):
+                    vid = v.get("vehicle_id")
+                    if vid and vid not in seen_ids:
+                        seen_ids.add(vid)
+                        cards.append(VehicleCard(
+                            vehicle_id=vid,
+                            brand=v.get("brand"),
+                            model_extended=v.get("model_extended"),
+                            configuration=v.get("configuration"),
+                            cabin=v.get("cabin"),
+                            power=v.get("power"),
+                            euro=v.get("euro"),
+                            gearbox=v.get("gearbox"),
+                            fuel=v.get("fuel"),
+                            mileage=v.get("mileage"),
+                            internet_price=v.get("internet_price"),
+                            is_new=v.get("is_new"),
+                            retarder=v.get("retarder"),
+                            has_airco=v.get("has_airco"),
+                            bed_amount=v.get("bed_amount"),
+                        ))
+            except (json.JSONDecodeError, KeyError):
+                continue
+
+    return cards
