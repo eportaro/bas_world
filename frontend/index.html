@@ -1,346 +1,698 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BAS World — Tractor Head Finder</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #0a0e1a;
-            --bg-secondary: #111827;
-            --bg-card: #1a2235;
-            --bg-chat-user: #2563eb;
-            --bg-chat-bot: #1e293b;
-            --accent: #3b82f6;
-            --accent-glow: rgba(59, 130, 246, 0.3);
-            --text-primary: #f1f5f9;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
-            --border: #1e293b;
-            --border-accent: #2563eb33;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --radius: 12px;
+            --bas-green: #00a651;
+            --bas-green-dark: #008c44;
+            --bas-green-light: #e6f7ee;
+            --bas-black: #1a1a1a;
+            --bas-dark: #2d2d2d;
+            --bg-white: #ffffff;
+            --bg-light: #f5f6f8;
+            --bg-card: #ffffff;
+            --text-primary: #1a1a1a;
+            --text-secondary: #5a5a5a;
+            --text-muted: #8a8a8a;
+            --border: #e0e0e0;
+            --border-light: #eeeeee;
+            --user-bubble: #00a651;
+            --bot-bubble: #f0f2f5;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.12);
+            --radius: 10px;
             --radius-lg: 16px;
-            --radius-xl: 24px;
-            --shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+            --sidebar-width: 280px;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-primary);
+            background: var(--bg-light);
             color: var(--text-primary);
             height: 100vh;
             display: flex;
+            flex-direction: column;
             overflow: hidden;
         }
 
-        /* Sidebar */
-        .sidebar {
-            width: 280px;
-            background: var(--bg-secondary);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            flex-shrink: 0;
-        }
-
-        .sidebar-header {
-            padding: 24px 20px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .logo {
+        /* ========== TOP HEADER ========== */
+        .top-bar {
+            background: var(--bas-black);
+            color: white;
+            padding: 0 24px;
+            height: 56px;
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 4px;
-        }
-
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--accent), #6366f1);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-
-        .logo-text {
-            font-size: 18px;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--accent), #a78bfa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .logo-subtitle {
-            font-size: 11px;
-            color: var(--text-muted);
-            margin-left: 52px;
-            letter-spacing: 0.5px;
-        }
-
-        .new-chat-btn {
-            width: 100%;
-            margin-top: 16px;
-            padding: 10px 16px;
-            background: transparent;
-            border: 1px dashed var(--text-muted);
-            color: var(--text-secondary);
-            border-radius: var(--radius);
-            cursor: pointer;
-            font-size: 13px;
-            font-family: inherit;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .new-chat-btn:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-            background: rgba(59, 130, 246, 0.05);
-        }
-
-        .sidebar-info {
-            padding: 20px;
-            margin-top: auto;
-            border-top: 1px solid var(--border);
-        }
-
-        .info-card {
-            background: var(--bg-card);
-            border-radius: var(--radius);
-            padding: 16px;
-            font-size: 12px;
-            line-height: 1.6;
-            color: var(--text-secondary);
-        }
-
-        .info-card h4 {
-            color: var(--text-primary);
-            font-size: 12px;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .info-card .stat {
-            display: flex;
             justify-content: space-between;
-            margin-top: 8px;
+            flex-shrink: 0;
+            z-index: 100;
         }
 
-        .info-card .stat-value {
-            color: var(--accent);
-            font-weight: 600;
-        }
-
-        /* Main chat area */
-        .main {
-            flex: 1;
+        .top-bar-left {
             display: flex;
-            flex-direction: column;
-            min-width: 0;
+            align-items: center;
+            gap: 16px;
         }
 
-        .chat-header {
-            padding: 16px 24px;
-            border-bottom: 1px solid var(--border);
+        .bas-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 20px;
+            letter-spacing: -0.5px;
+        }
+
+        .bas-logo svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        .bas-logo-accent {
+            color: var(--bas-green);
+        }
+
+        .top-bar-divider {
+            width: 1px;
+            height: 28px;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .top-bar-subtitle {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 400;
+        }
+
+        .top-bar-right {
             display: flex;
             align-items: center;
             gap: 12px;
-            background: var(--bg-secondary);
         }
 
-        .chat-header .status-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--success);
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            background: var(--bas-green);
             border-radius: 50%;
             animation: pulse 2s infinite;
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
         }
 
-        .chat-header h2 {
-            font-size: 15px;
+        .inv-count {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+            padding: 4px 10px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+        }
+
+        .sidebar-toggle-btn {
+            padding: 7px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .sidebar-toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.18);
+        }
+
+        .new-chat-btn {
+            padding: 7px 14px;
+            background: var(--bas-green);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.2s;
+        }
+
+        .new-chat-btn:hover {
+            background: var(--bas-green-dark);
+        }
+
+        /* ========== MAIN LAYOUT ========== */
+        .app-body {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* ========== LEFT SIDEBAR ========== */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-white);
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            flex-shrink: 0;
+            transition: margin-left 0.3s ease, opacity 0.3s ease;
+            z-index: 10;
+        }
+
+        .sidebar.collapsed {
+            margin-left: calc(-1 * var(--sidebar-width));
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 2px;
+        }
+
+        .sidebar-header {
+            padding: 16px 16px 12px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar-header h3 {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .clear-filters-btn {
+            font-size: 11px;
+            color: var(--bas-green);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
             font-weight: 600;
         }
 
-        .chat-header .model-badge {
-            margin-left: auto;
-            font-size: 11px;
-            padding: 4px 10px;
-            background: var(--bg-card);
-            border-radius: 20px;
-            color: var(--text-muted);
+        .clear-filters-btn:hover {
+            text-decoration: underline;
         }
 
-        /* Messages container */
+        /* Filter sections */
+        .filter-section {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .filter-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .filter-section-title .chevron {
+            transition: transform 0.2s;
+            font-size: 10px;
+        }
+
+        .filter-section.closed .filter-section-title .chevron {
+            transform: rotate(-90deg);
+        }
+
+        .filter-section.closed .filter-options {
+            display: none;
+        }
+
+        .filter-options {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .filter-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 0;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--text-secondary);
+            transition: color 0.15s;
+        }
+
+        .filter-option:hover {
+            color: var(--text-primary);
+        }
+
+        .filter-option input[type="checkbox"] {
+            width: 15px;
+            height: 15px;
+            accent-color: var(--bas-green);
+            cursor: pointer;
+        }
+
+        .filter-option .count {
+            margin-left: auto;
+            font-size: 11px;
+            color: var(--text-muted);
+            background: var(--bg-light);
+            padding: 1px 6px;
+            border-radius: 8px;
+        }
+
+        /* Price range slider */
+        .price-range-container {
+            padding: 4px 0;
+        }
+
+        .price-inputs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .price-input {
+            flex: 1;
+            padding: 6px 8px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 12px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .price-input:focus {
+            border-color: var(--bas-green);
+        }
+
+        .price-label {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-bottom: 3px;
+            display: block;
+        }
+
+        /* Apply button */
+        .apply-filters-btn {
+            width: calc(100% - 32px);
+            margin: 12px 16px 16px;
+            padding: 10px;
+            background: var(--bas-green);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.2s;
+        }
+
+        .apply-filters-btn:hover {
+            background: var(--bas-green-dark);
+        }
+
+        .active-filter-count {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 1px 6px;
+            border-radius: 8px;
+            font-size: 11px;
+            margin-left: 6px;
+        }
+
+        /* ========== CHAT AREA ========== */
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* ========== MESSAGES ========== */
         .messages {
             flex: 1;
             overflow-y: auto;
-            padding: 24px;
+            padding: 24px 20px;
             scroll-behavior: smooth;
         }
 
-        .messages::-webkit-scrollbar { width: 6px; }
-        .messages::-webkit-scrollbar-track { background: transparent; }
-        .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        .messages::-webkit-scrollbar {
+            width: 5px;
+        }
 
+        .messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .messages::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 3px;
+        }
+
+        /* ========== MESSAGE BUBBLES ========== */
         .message {
             display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
-            animation: messageIn 0.3s ease-out;
-            max-width: 900px;
+            gap: 10px;
+            margin-bottom: 16px;
+            animation: msgIn 0.3s ease;
         }
 
-        @keyframes messageIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes msgIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .message.user { flex-direction: row-reverse; }
+        .message.user {
+            flex-direction: row-reverse;
+        }
 
-        .message-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
+        .msg-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 14px;
             flex-shrink: 0;
+            font-weight: 700;
         }
 
-        .message.bot .message-avatar {
-            background: linear-gradient(135deg, var(--accent), #6366f1);
+        .message.bot .msg-avatar {
+            background: var(--bas-green);
+            color: white;
+            font-size: 16px;
         }
 
-        .message.user .message-avatar {
-            background: var(--bg-card);
+        .message.user .msg-avatar {
+            background: #e0e0e0;
+            color: #555;
         }
 
-        .message-content {
-            max-width: 75%;
+        .msg-content {
+            max-width: 72%;
             padding: 12px 16px;
-            border-radius: var(--radius-lg);
-            line-height: 1.65;
+            border-radius: 18px;
+            line-height: 1.6;
             font-size: 14px;
-            white-space: pre-wrap;
             word-break: break-word;
         }
 
-        .message.user .message-content {
-            background: var(--bg-chat-user);
+        .message.user .msg-content {
+            background: var(--user-bubble);
+            color: white;
             border-bottom-right-radius: 4px;
         }
 
-        .message.bot .message-content {
-            background: var(--bg-chat-bot);
+        .message.bot .msg-content {
+            background: var(--bot-bubble);
+            color: var(--text-primary);
             border-bottom-left-radius: 4px;
-            border: 1px solid var(--border);
         }
 
-        /* Vehicle cards */
+        /* Markdown rendering */
+        .msg-content p {
+            margin-bottom: 8px;
+        }
+
+        .msg-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .msg-content strong {
+            font-weight: 700;
+        }
+
+        .msg-content em {
+            font-style: italic;
+        }
+
+        .msg-content ul,
+        .msg-content ol {
+            margin: 6px 0 6px 18px;
+        }
+
+        .msg-content li {
+            margin-bottom: 4px;
+        }
+
+        .msg-content code {
+            background: rgba(0, 0, 0, 0.06);
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-size: 13px;
+        }
+
+        .msg-content table {
+            border-collapse: collapse;
+            margin: 8px 0;
+            font-size: 13px;
+            width: 100%;
+        }
+
+        .msg-content th,
+        .msg-content td {
+            border: 1px solid #d0d0d0;
+            padding: 6px 10px;
+            text-align: left;
+        }
+
+        .msg-content th {
+            background: #e8e8e8;
+            font-weight: 600;
+        }
+
+        .msg-content h3,
+        .msg-content h4 {
+            margin: 10px 0 4px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        /* ========== VEHICLE CARDS ========== */
         .vehicle-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 12px;
-            margin-top: 16px;
-            max-width: 900px;
+            margin: 12px 0 8px 44px;
         }
 
         .vehicle-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            padding: 16px;
-            transition: all 0.2s;
+            overflow: hidden;
+            transition: all 0.25s;
             cursor: default;
+            box-shadow: var(--shadow-sm);
         }
 
         .vehicle-card:hover {
-            border-color: var(--accent);
-            box-shadow: 0 0 20px var(--accent-glow);
+            box-shadow: var(--shadow-md);
             transform: translateY(-2px);
+            border-color: var(--bas-green);
         }
 
-        .vehicle-card .vc-header {
+        .vc-img {
+            height: 120px;
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 10px;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
         }
 
-        .vehicle-card .vc-brand {
+        .vc-img svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .vc-badge-new {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: #ff6b00;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 3px;
+            text-transform: uppercase;
+            z-index: 2;
+        }
+
+        .vc-badge-condition {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 3px;
+            z-index: 2;
+        }
+
+        .vc-badge-condition.used {
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+        }
+
+        .vc-body {
+            padding: 12px 14px;
+        }
+
+        .vc-title {
             font-weight: 700;
             font-size: 14px;
             color: var(--text-primary);
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .vehicle-card .vc-price {
-            font-weight: 700;
-            font-size: 15px;
-            color: var(--success);
-        }
-
-        .vehicle-card .vc-model {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-bottom: 12px;
-        }
-
-        .vehicle-card .vc-specs {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-
-        .vehicle-card .vc-tag {
+        .vc-subtitle {
             font-size: 11px;
-            padding: 3px 8px;
-            border-radius: 6px;
-            background: rgba(59, 130, 246, 0.1);
-            color: var(--accent);
-            border: 1px solid rgba(59, 130, 246, 0.15);
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .vehicle-card .vc-tag.euro { background: rgba(16, 185, 129, 0.1); color: var(--success); border-color: rgba(16, 185, 129, 0.15); }
-        .vehicle-card .vc-tag.new { background: rgba(245, 158, 11, 0.1); color: var(--warning); border-color: rgba(245, 158, 11, 0.15); }
-        .vehicle-card .vc-id { font-size: 10px; color: var(--text-muted); }
-
-        /* Input area */
-        .input-area {
-            padding: 16px 24px 24px;
-            border-top: 1px solid var(--border);
-            background: var(--bg-secondary);
-        }
-
-        .suggested-prompts {
+        .vc-specs-row {
             display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 10px;
+        }
+
+        .vc-tag {
+            font-size: 10px;
+            font-weight: 500;
+            padding: 3px 7px;
+            border-radius: 4px;
+            background: var(--bg-light);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-light);
+        }
+
+        .vc-tag.euro {
+            background: var(--bas-green-light);
+            color: var(--bas-green-dark);
+            border-color: #b2e5cc;
+        }
+
+        .vc-tag.new-tag {
+            background: #fff3e0;
+            color: #e65100;
+            border-color: #ffe0b2;
+        }
+
+        .vc-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border-light);
+            padding-top: 8px;
+        }
+
+        .vc-price {
+            font-weight: 800;
+            font-size: 16px;
+            color: var(--bas-green);
+        }
+
+        .vc-mileage-small {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .vc-id {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        /* ========== INPUT AREA ========== */
+        .input-area {
+            padding: 12px 20px 20px;
+            background: var(--bg-white);
+            border-top: 1px solid var(--border);
+        }
+
+        .suggestion-chips {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 10px;
             flex-wrap: wrap;
         }
 
-        .suggested-prompt {
+        .chip {
             font-size: 12px;
-            padding: 6px 12px;
-            background: var(--bg-card);
+            padding: 6px 14px;
+            background: var(--bg-white);
             border: 1px solid var(--border);
             border-radius: 20px;
             color: var(--text-secondary);
@@ -349,23 +701,24 @@
             font-family: inherit;
         }
 
-        .suggested-prompt:hover {
-            border-color: var(--accent);
-            color: var(--accent);
+        .chip:hover {
+            border-color: var(--bas-green);
+            color: var(--bas-green);
+            background: var(--bas-green-light);
         }
 
-        .input-wrapper {
+        .input-row {
             display: flex;
             gap: 8px;
             align-items: flex-end;
         }
 
-        .input-wrapper textarea {
+        .input-row textarea {
             flex: 1;
-            padding: 12px 16px;
-            background: var(--bg-card);
+            padding: 11px 16px;
+            background: var(--bg-light);
             border: 1px solid var(--border);
-            border-radius: var(--radius);
+            border-radius: 24px;
             color: var(--text-primary);
             font-family: inherit;
             font-size: 14px;
@@ -377,20 +730,21 @@
             transition: border-color 0.2s;
         }
 
-        .input-wrapper textarea:focus {
-            border-color: var(--accent);
+        .input-row textarea:focus {
+            border-color: var(--bas-green);
+            background: var(--bg-white);
         }
 
-        .input-wrapper textarea::placeholder {
+        .input-row textarea::placeholder {
             color: var(--text-muted);
         }
 
         .send-btn {
             width: 44px;
             height: 44px;
-            background: var(--accent);
+            background: var(--bas-green);
             border: none;
-            border-radius: var(--radius);
+            border-radius: 50%;
             color: white;
             cursor: pointer;
             display: flex;
@@ -400,78 +754,97 @@
             flex-shrink: 0;
         }
 
-        .send-btn:hover { background: #2563eb; transform: scale(1.05); }
-        .send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .send-btn:hover {
+            background: var(--bas-green-dark);
+        }
 
-        /* Loading animation */
+        .send-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* ========== TYPING INDICATOR ========== */
         .typing-indicator {
             display: flex;
-            gap: 4px;
+            gap: 5px;
             padding: 4px 0;
         }
 
         .typing-indicator span {
-            width: 6px;
-            height: 6px;
+            width: 7px;
+            height: 7px;
             background: var(--text-muted);
             border-radius: 50%;
-            animation: typing 1.4s infinite;
+            animation: typeDot 1.4s infinite;
         }
 
-        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-
-        @keyframes typing {
-            0%, 100% { opacity: 0.3; transform: scale(0.8); }
-            50% { opacity: 1; transform: scale(1); }
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
         }
 
-        /* Welcome screen */
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typeDot {
+
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: scale(0.8);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+        }
+
+        /* ========== WELCOME SCREEN ========== */
         .welcome {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 40px;
+            padding: 40px 20px;
             height: 100%;
         }
 
-        .welcome-icon {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, var(--accent), #6366f1);
-            border-radius: 20px;
+        .welcome-logo {
+            width: 70px;
+            height: 70px;
+            background: var(--bas-green);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 36px;
-            margin-bottom: 24px;
-            box-shadow: 0 8px 32px var(--accent-glow);
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: white;
+            box-shadow: 0 6px 20px rgba(0, 166, 81, 0.25);
         }
 
         .welcome h1 {
-            font-size: 28px;
-            font-weight: 700;
+            font-size: 24px;
+            font-weight: 800;
             margin-bottom: 8px;
-            background: linear-gradient(135deg, var(--text-primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--text-primary);
         }
 
         .welcome p {
             color: var(--text-secondary);
-            font-size: 15px;
-            max-width: 500px;
+            font-size: 14px;
+            max-width: 480px;
             line-height: 1.6;
-            margin-bottom: 32px;
+            margin-bottom: 28px;
         }
 
-        .welcome-cards {
+        .welcome-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            max-width: 600px;
+            gap: 10px;
+            max-width: 520px;
             width: 100%;
         }
 
@@ -483,112 +856,433 @@
             text-align: left;
             cursor: pointer;
             transition: all 0.2s;
+            box-shadow: var(--shadow-sm);
         }
 
         .welcome-card:hover {
-            border-color: var(--accent);
-            box-shadow: 0 0 20px var(--accent-glow);
+            border-color: var(--bas-green);
+            box-shadow: var(--shadow-md);
         }
 
-        .welcome-card .wc-icon { font-size: 20px; margin-bottom: 8px; }
-        .welcome-card .wc-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
-        .welcome-card .wc-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+        .wc-icon {
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
 
-        /* Mobile responsive */
+        .wc-title {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: var(--text-primary);
+        }
+
+        .wc-desc {
+            font-size: 11px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 900px) {
+            .sidebar {
+                position: fixed;
+                top: 56px;
+                left: 0;
+                bottom: 0;
+                box-shadow: var(--shadow-lg);
+            }
+
+            .sidebar.collapsed {
+                margin-left: calc(-1 * var(--sidebar-width));
+            }
+        }
+
         @media (max-width: 768px) {
-            .sidebar { display: none; }
-            .welcome-cards { grid-template-columns: 1fr; }
-            .vehicle-cards { grid-template-columns: 1fr; }
+            .top-bar-subtitle {
+                display: none;
+            }
+
+            .top-bar-divider {
+                display: none;
+            }
+
+            .welcome-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .vehicle-cards {
+                grid-template-columns: 1fr;
+                margin-left: 0;
+            }
+
+            .msg-content {
+                max-width: 85%;
+            }
+
+            .status-badge {
+                display: none;
+            }
+
+            .inv-count {
+                display: none;
+            }
         }
     </style>
 </head>
+
 <body>
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <div class="sidebar-header">
-            <div class="logo">
-                <div class="logo-icon">🚛</div>
-                <span class="logo-text">BAS World</span>
+    <!-- Top Bar -->
+    <header class="top-bar">
+        <div class="top-bar-left">
+            <div class="bas-logo">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M3 13h1l1-2h2l1 2h10l1-2h2l1 2h1" stroke="white" stroke-width="1.5"
+                        stroke-linecap="round" />
+                    <rect x="2" y="14" width="20" height="5" rx="2" stroke="white" stroke-width="1.5" />
+                    <circle cx="6" cy="19" r="2" stroke="white" stroke-width="1.5" />
+                    <circle cx="18" cy="19" r="2" stroke="white" stroke-width="1.5" />
+                    <path d="M6 9h5v4H6z" stroke="white" stroke-width="1.5" stroke-linejoin="round" />
+                    <path d="M11 7h5l3 6" stroke="white" stroke-width="1.5" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+                <span>BAS <span class="bas-logo-accent">World</span></span>
             </div>
-            <div class="logo-subtitle">AI Tractor Head Finder</div>
-            <button class="new-chat-btn" onclick="newSession()">
-                ✨ New conversation
+            <div class="top-bar-divider"></div>
+            <span class="top-bar-subtitle">AI Tractor Head Finder</span>
+        </div>
+        <div class="top-bar-right">
+            <span class="inv-count" id="invCount"></span>
+            <div class="status-badge">
+                <span class="status-dot"></span>
+                <span>AI Online</span>
+            </div>
+            <button class="sidebar-toggle-btn" id="sidebarToggle" onclick="toggleSidebar()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="4" y1="6" x2="20" y2="6" />
+                    <line x1="4" y1="12" x2="14" y2="12" />
+                    <line x1="4" y1="18" x2="18" y2="18" />
+                </svg>
+                Filters
             </button>
+            <button class="new-chat-btn" onclick="newSession()">+ New Chat</button>
         </div>
-        <div class="sidebar-info">
-            <div class="info-card">
-                <h4>Inventory Stats</h4>
-                <div class="stat"><span>Total vehicles</span><span class="stat-value" id="stat-total">673</span></div>
-                <div class="stat"><span>Brands</span><span class="stat-value">9</span></div>
-                <div class="stat"><span>AI Model</span><span class="stat-value">Gemini 2.5</span></div>
+    </header>
+
+    <!-- App Body -->
+    <div class="app-body">
+        <!-- Sidebar Filters -->
+        <aside class="sidebar collapsed" id="sidebar">
+            <div class="sidebar-header">
+                <h3>🔍 Filter Inventory</h3>
+                <button class="clear-filters-btn" onclick="clearAllFilters()">Clear all</button>
             </div>
-        </div>
-    </aside>
 
-    <!-- Main -->
-    <main class="main">
-        <header class="chat-header">
-            <div class="status-dot"></div>
-            <h2>Tractor Head Consultant</h2>
-            <span class="model-badge">⚡ Multi-Agent System</span>
-        </header>
+            <!-- Brand -->
+            <div class="filter-section" id="filterBrand">
+                <div class="filter-section-title" onclick="toggleSection('filterBrand')">
+                    Brand <span class="chevron">▼</span>
+                </div>
+                <div class="filter-options" id="brandOptions"></div>
+            </div>
 
-        <div class="messages" id="messages">
-            <div class="welcome" id="welcome">
-                <div class="welcome-icon">🚛</div>
-                <h1>Find Your Perfect Tractor Head</h1>
-                <p>I'm your AI-powered consultant. Tell me what you need — whether it's specific specs or just a general idea — and I'll find the best match from our inventory of 673+ vehicles.</p>
-                <div class="welcome-cards">
-                    <div class="welcome-card" onclick="sendSuggestion('I need a tractor head for international long-distance transport')">
-                        <div class="wc-icon">🌍</div>
-                        <div class="wc-title">Long Distance</div>
-                        <div class="wc-desc">Find comfortable, efficient tractors for international routes</div>
-                    </div>
-                    <div class="welcome-card" onclick="sendSuggestion('4x2 tractor, Euro 6, automatic, at least 450 HP, under €50,000')">
-                        <div class="wc-icon">🔧</div>
-                        <div class="wc-title">Specific Specs</div>
-                        <div class="wc-desc">Search by exact technical requirements</div>
-                    </div>
-                    <div class="welcome-card" onclick="sendSuggestion('I need a tractor for heavy loads. What do you recommend?')">
-                        <div class="wc-icon">💪</div>
-                        <div class="wc-title">Heavy Loads</div>
-                        <div class="wc-desc">Get expert advice for demanding applications</div>
-                    </div>
-                    <div class="welcome-card" onclick="sendSuggestion('Show me the most affordable Euro 6 automatic tractors')">
-                        <div class="wc-icon">💰</div>
-                        <div class="wc-title">Budget Friendly</div>
-                        <div class="wc-desc">Explore cost-effective options with good specs</div>
+            <!-- Configuration -->
+            <div class="filter-section" id="filterConfig">
+                <div class="filter-section-title" onclick="toggleSection('filterConfig')">
+                    Configuration <span class="chevron">▼</span>
+                </div>
+                <div class="filter-options" id="configOptions"></div>
+            </div>
+
+            <!-- Euro Norm -->
+            <div class="filter-section" id="filterEuro">
+                <div class="filter-section-title" onclick="toggleSection('filterEuro')">
+                    Euro Norm <span class="chevron">▼</span>
+                </div>
+                <div class="filter-options" id="euroOptions"></div>
+            </div>
+
+            <!-- Gearbox -->
+            <div class="filter-section" id="filterGearbox">
+                <div class="filter-section-title" onclick="toggleSection('filterGearbox')">
+                    Gearbox <span class="chevron">▼</span>
+                </div>
+                <div class="filter-options" id="gearboxOptions"></div>
+            </div>
+
+            <!-- Fuel -->
+            <div class="filter-section" id="filterFuel">
+                <div class="filter-section-title" onclick="toggleSection('filterFuel')">
+                    Fuel Type <span class="chevron">▼</span>
+                </div>
+                <div class="filter-options" id="fuelOptions"></div>
+            </div>
+
+            <!-- Price Range -->
+            <div class="filter-section" id="filterPrice">
+                <div class="filter-section-title" onclick="toggleSection('filterPrice')">
+                    Price Range <span class="chevron">▼</span>
+                </div>
+                <div class="filter-options">
+                    <div class="price-range-container">
+                        <div class="price-inputs">
+                            <div>
+                                <span class="price-label">Min (€)</span>
+                                <input type="number" class="price-input" id="priceMin" placeholder="0" step="1000">
+                            </div>
+                            <div>
+                                <span class="price-label">Max (€)</span>
+                                <input type="number" class="price-input" id="priceMax" placeholder="No limit"
+                                    step="1000">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="input-area">
-            <div class="suggested-prompts" id="suggestions">
-                <button class="suggested-prompt" onclick="sendSuggestion('Show me cheaper options')">💰 Cheaper options</button>
-                <button class="suggested-prompt" onclick="sendSuggestion('Compare the first and third options')">📊 Compare</button>
-                <button class="suggested-prompt" onclick="sendSuggestion('What do you recommend for driver comfort?')">🛋️ Comfort advice</button>
+            <button class="apply-filters-btn" onclick="applyFilters()">
+                🔎 Search with Filters
+            </button>
+        </aside>
+
+        <!-- Chat Area -->
+        <div class="chat-container">
+            <!-- Messages -->
+            <div class="messages" id="messages">
+                <div class="welcome" id="welcome">
+                    <div class="welcome-logo">🚛</div>
+                    <h1>Find Your Perfect Tractor Head</h1>
+                    <p>Tell me what you need — whether it's specific specs or just a general idea — and I'll find the
+                        best match from our inventory of 673+ vehicles.</p>
+                    <div class="welcome-grid">
+                        <div class="welcome-card"
+                            onclick="sendSuggestion('I need a tractor head for international long-distance transport')">
+                            <div class="wc-icon">🌍</div>
+                            <div class="wc-title">Long Distance</div>
+                            <div class="wc-desc">Find comfortable, efficient tractors for international routes</div>
+                        </div>
+                        <div class="welcome-card"
+                            onclick="sendSuggestion('4x2 tractor, Euro 6, automatic, at least 450 HP, under €50,000')">
+                            <div class="wc-icon">🔧</div>
+                            <div class="wc-title">Search by Specs</div>
+                            <div class="wc-desc">Filter by configuration, power, price and more</div>
+                        </div>
+                        <div class="welcome-card"
+                            onclick="sendSuggestion('I need a tractor for heavy loads. What do you recommend?')">
+                            <div class="wc-icon">💪</div>
+                            <div class="wc-title">Heavy Loads</div>
+                            <div class="wc-desc">Expert advice for demanding applications</div>
+                        </div>
+                        <div class="welcome-card"
+                            onclick="sendSuggestion('Show me the most affordable Euro 6 automatic tractors')">
+                            <div class="wc-icon">💰</div>
+                            <div class="wc-title">Budget Friendly</div>
+                            <div class="wc-desc">Great value picks without compromising quality</div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="input-wrapper">
-                <textarea id="userInput" rows="1" placeholder="Describe what you're looking for..." 
-                    onkeydown="handleKeyDown(event)" oninput="autoResize(this)"></textarea>
-                <button class="send-btn" id="sendBtn" onclick="sendMessage()">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="22" y1="2" x2="11" y2="13"></line>
-                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                    </svg>
-                </button>
+
+            <!-- Input -->
+            <div class="input-area">
+                <div class="suggestion-chips" id="suggestions">
+                    <button class="chip" onclick="sendSuggestion('Show me cheaper options')">💰 Cheaper</button>
+                    <button class="chip" onclick="sendSuggestion('Compare the first and third options')">📊
+                        Compare</button>
+                    <button class="chip" onclick="sendSuggestion('What do you recommend for driver comfort?')">🛋️
+                        Comfort</button>
+                    <button class="chip" onclick="sendSuggestion('Show me more options')">➕ More options</button>
+                </div>
+                <div class="input-row">
+                    <textarea id="userInput" rows="1" placeholder="Describe what you're looking for..."
+                        onkeydown="handleKeyDown(event)" oninput="autoResize(this)"></textarea>
+                    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
-    </main>
+    </div>
 
     <script>
+        // ===================== STATE =====================
         let sessionId = crypto.randomUUID();
         const messagesEl = document.getElementById('messages');
         const inputEl = document.getElementById('userInput');
         const sendBtn = document.getElementById('sendBtn');
         const welcomeEl = document.getElementById('welcome');
+        let metaData = null;
 
+        // ===================== BRAND COLORS =====================
+        const BRAND_COLORS = {
+            DAF: { bg: '#1a365d', accent: '#2b5ea7', text: '#fff' },
+            SCANIA: { bg: '#1b3a5c', accent: '#c41e3a', text: '#fff' },
+            MERCEDES: { bg: '#2d2d2d', accent: '#00adef', text: '#fff' },
+            VOLVO: { bg: '#003057', accent: '#4a90d9', text: '#fff' },
+            MAN: { bg: '#1a1a1a', accent: '#e30613', text: '#fff' },
+            RENAULT: { bg: '#2c2c2c', accent: '#ffcc33', text: '#fff' },
+            IVECO: { bg: '#003366', accent: '#cc0000', text: '#fff' },
+            FORD: { bg: '#003478', accent: '#ffffff', text: '#fff' },
+            GINAF: { bg: '#cc3300', accent: '#ff6633', text: '#fff' },
+        };
+
+        function getBrandColor(brand) {
+            return BRAND_COLORS[(brand || '').toUpperCase()] || { bg: '#3d4f5f', accent: '#5a8a9a', text: '#fff' };
+        }
+
+        // ===================== TRUCK SVG =====================
+        function createTruckSVG(brand, isNew) {
+            const colors = getBrandColor(brand);
+            return `<svg viewBox="0 0 320 130" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="bg_${brand}" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="${colors.bg}"/>
+                        <stop offset="100%" stop-color="${colors.accent}" stop-opacity="0.3"/>
+                    </linearGradient>
+                </defs>
+                <rect width="320" height="130" fill="url(#bg_${brand})"/>
+                <!-- Road line -->
+                <rect x="0" y="108" width="320" height="2" fill="rgba(255,255,255,0.15)" rx="1"/>
+                <!-- Truck body -->
+                <rect x="60" y="42" width="160" height="60" rx="4" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                <!-- Cabin -->
+                <rect x="220" y="32" width="60" height="70" rx="6" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+                <!-- Window -->
+                <rect x="228" y="38" width="44" height="28" rx="3" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+                <!-- Wheels -->
+                <circle cx="100" cy="108" r="12" fill="rgba(0,0,0,0.4)" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+                <circle cx="140" cy="108" r="12" fill="rgba(0,0,0,0.4)" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+                <circle cx="250" cy="108" r="12" fill="rgba(0,0,0,0.4)" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+                <!-- Wheel hubs -->
+                <circle cx="100" cy="108" r="4" fill="rgba(255,255,255,0.2)"/>
+                <circle cx="140" cy="108" r="4" fill="rgba(255,255,255,0.2)"/>
+                <circle cx="250" cy="108" r="4" fill="rgba(255,255,255,0.2)"/>
+                <!-- Headlight -->
+                <rect x="275" y="60" width="5" height="10" rx="2" fill="${colors.accent}" opacity="0.8"/>
+                <!-- Brand name -->
+                <text x="160" y="78" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="800" fill="rgba(255,255,255,0.35)" letter-spacing="3">${(brand || 'TRUCK').toUpperCase()}</text>
+            </svg>`;
+        }
+
+        // ===================== SIDEBAR =====================
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+        }
+
+        function toggleSection(id) {
+            document.getElementById(id).classList.toggle('closed');
+        }
+
+        async function loadMeta() {
+            try {
+                const res = await fetch('/meta.json');
+                metaData = await res.json();
+                populateFilters(metaData);
+                document.getElementById('invCount').textContent = `${metaData.total} vehicles`;
+            } catch (e) {
+                console.warn('Could not load meta:', e);
+            }
+        }
+
+        function populateFilters(meta) {
+            // Brands
+            const brandEl = document.getElementById('brandOptions');
+            meta.brands.forEach(b => {
+                brandEl.appendChild(createFilterOption('brand', b.value, b.count));
+            });
+
+            // Configs
+            const configEl = document.getElementById('configOptions');
+            meta.configurations.forEach(c => {
+                configEl.appendChild(createFilterOption('config', c.value, c.count));
+            });
+
+            // Euro
+            const euroEl = document.getElementById('euroOptions');
+            meta.euro_norms.forEach(e => {
+                euroEl.appendChild(createFilterOption('euro', `Euro ${e}`, null, e));
+            });
+
+            // Gearbox
+            const gearboxEl = document.getElementById('gearboxOptions');
+            meta.gearboxes.forEach(g => {
+                gearboxEl.appendChild(createFilterOption('gearbox', g.value, g.count));
+            });
+
+            // Fuel
+            const fuelEl = document.getElementById('fuelOptions');
+            meta.fuels.forEach(f => {
+                fuelEl.appendChild(createFilterOption('fuel', f.value, f.count));
+            });
+
+            // Price
+            if (meta.price_range) {
+                document.getElementById('priceMin').placeholder = `${Math.floor(meta.price_range.min).toLocaleString('de-DE')}`;
+                document.getElementById('priceMax').placeholder = `${Math.floor(meta.price_range.max).toLocaleString('de-DE')}`;
+            }
+        }
+
+        function createFilterOption(group, label, count, dataValue) {
+            const div = document.createElement('label');
+            div.className = 'filter-option';
+            div.innerHTML = `
+                <input type="checkbox" name="${group}" value="${dataValue || label}">
+                <span>${label}</span>
+                ${count ? `<span class="count">${count}</span>` : ''}
+            `;
+            return div;
+        }
+
+        function getSelectedFilters() {
+            const filters = {};
+            document.querySelectorAll('.filter-option input:checked').forEach(cb => {
+                const group = cb.name;
+                if (!filters[group]) filters[group] = [];
+                filters[group].push(cb.value);
+            });
+            const minPrice = document.getElementById('priceMin').value;
+            const maxPrice = document.getElementById('priceMax').value;
+            if (minPrice) filters.minPrice = minPrice;
+            if (maxPrice) filters.maxPrice = maxPrice;
+            return filters;
+        }
+
+        function clearAllFilters() {
+            document.querySelectorAll('.filter-option input:checked').forEach(cb => cb.checked = false);
+            document.getElementById('priceMin').value = '';
+            document.getElementById('priceMax').value = '';
+        }
+
+        function applyFilters() {
+            const filters = getSelectedFilters();
+            const parts = [];
+
+            if (filters.brand) parts.push(`brand: ${filters.brand.join(' or ')}`);
+            if (filters.config) parts.push(`configuration: ${filters.config.join(' or ')}`);
+            if (filters.euro) parts.push(`Euro ${filters.euro.join(' or ')}`);
+            if (filters.gearbox) parts.push(`${filters.gearbox.join(' or ')} gearbox`);
+            if (filters.fuel) parts.push(`${filters.fuel.join(' or ')} fuel`);
+            if (filters.minPrice) parts.push(`minimum price €${parseInt(filters.minPrice).toLocaleString('de-DE')}`);
+            if (filters.maxPrice) parts.push(`maximum price €${parseInt(filters.maxPrice).toLocaleString('de-DE')}`);
+
+            if (parts.length === 0) {
+                inputEl.value = 'Show me the best tractor heads available';
+            } else {
+                inputEl.value = `Find tractor heads with: ${parts.join(', ')}`;
+            }
+
+            sendMessage();
+
+            // Collapse sidebar on mobile
+            if (window.innerWidth < 900) {
+                document.getElementById('sidebar').classList.add('collapsed');
+            }
+        }
+
+        // ===================== CHAT HELPERS =====================
         function newSession() {
             sessionId = crypto.randomUUID();
             messagesEl.innerHTML = '';
@@ -613,6 +1307,58 @@
             sendMessage();
         }
 
+        // ===================== MARKDOWN RENDERER =====================
+        function renderMarkdown(text) {
+            let html = text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+
+            // Tables
+            html = html.replace(/^(\|.+\|)\n(\|[-| :]+\|)\n((?:\|.+\|\n?)*)/gm, (match, header, sep, body) => {
+                const headerCells = header.split('|').filter(c => c.trim()).map(c => `<th>${c.trim()}</th>`).join('');
+                const rows = body.trim().split('\n').map(row => {
+                    const cells = row.split('|').filter(c => c.trim()).map(c => `<td>${c.trim()}</td>`).join('');
+                    return `<tr>${cells}</tr>`;
+                }).join('');
+                return `<table><thead><tr>${headerCells}</tr></thead><tbody>${rows}</tbody></table>`;
+            });
+
+            html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+            html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+            // Unordered lists
+            html = html.replace(/^(\s*[-•]\s+.+(\n|$))+/gm, (match) => {
+                const items = match.trim().split('\n').map(line => {
+                    return `<li>${line.replace(/^\s*[-•]\s+/, '')}</li>`;
+                }).join('');
+                return `<ul>${items}</ul>`;
+            });
+
+            // Ordered lists
+            html = html.replace(/^(\s*\d+\.\s+.+(\n|$))+/gm, (match) => {
+                const items = match.trim().split('\n').map(line => {
+                    return `<li>${line.replace(/^\s*\d+\.\s+/, '')}</li>`;
+                }).join('');
+                return `<ol>${items}</ol>`;
+            });
+
+            html = html.replace(/^####\s+(.+)$/gm, '<h4>$1</h4>');
+            html = html.replace(/^###\s+(.+)$/gm, '<h3>$1</h3>');
+
+            html = html.replace(/\n{2,}/g, '</p><p>');
+            html = html.replace(/\n/g, '<br>');
+            html = `<p>${html}</p>`;
+
+            html = html.replace(/<p>\s*<\/p>/g, '');
+            html = html.replace(/<p>\s*(<(?:ul|ol|table|h[34]))/g, '$1');
+            html = html.replace(/(<\/(?:ul|ol|table|h[34])>)\s*<\/p>/g, '$1');
+
+            return html;
+        }
+
+        // ===================== MESSAGE HANDLING =====================
         function addMessage(content, type, vehicles = []) {
             if (welcomeEl) welcomeEl.style.display = 'none';
 
@@ -620,24 +1366,28 @@
             msgDiv.className = `message ${type}`;
 
             const avatar = document.createElement('div');
-            avatar.className = 'message-avatar';
-            avatar.textContent = type === 'user' ? '👤' : '🤖';
+            avatar.className = 'msg-avatar';
+            avatar.textContent = type === 'user' ? '👤' : 'B';
 
             const contentDiv = document.createElement('div');
-            contentDiv.className = 'message-content';
-            contentDiv.textContent = content;
+            contentDiv.className = 'msg-content';
+
+            if (type === 'bot') {
+                contentDiv.innerHTML = renderMarkdown(content);
+            } else {
+                contentDiv.textContent = content;
+            }
 
             msgDiv.appendChild(avatar);
             msgDiv.appendChild(contentDiv);
             messagesEl.appendChild(msgDiv);
 
-            // Add vehicle cards if present
+            // Vehicle cards
             if (vehicles.length > 0) {
                 const cardsContainer = document.createElement('div');
                 cardsContainer.className = 'vehicle-cards';
                 vehicles.forEach(v => {
-                    const card = createVehicleCard(v);
-                    cardsContainer.appendChild(card);
+                    cardsContainer.appendChild(createVehicleCard(v));
                 });
                 messagesEl.appendChild(cardsContainer);
             }
@@ -650,41 +1400,53 @@
             card.className = 'vehicle-card';
 
             const price = v.internet_price && v.internet_price > 0
-                ? `€${v.internet_price.toLocaleString()}`
+                ? `€ ${v.internet_price.toLocaleString('de-DE')}`
                 : 'On request';
 
-            const mileage = v.mileage ? `${v.mileage.toLocaleString()} km` : '';
+            const mileage = v.mileage ? `${v.mileage.toLocaleString('de-DE')} km` : '';
+            const power = v.power ? `${v.power} HP` : '';
 
             let tags = '';
             if (v.configuration) tags += `<span class="vc-tag">${v.configuration}</span>`;
-            if (v.power) tags += `<span class="vc-tag">${v.power} HP</span>`;
+            if (power) tags += `<span class="vc-tag">${power}</span>`;
+            if (v.euro) tags += `<span class="vc-tag euro">Euro ${v.euro}</span>`;
             if (v.gearbox) tags += `<span class="vc-tag">${v.gearbox}</span>`;
             if (v.fuel) tags += `<span class="vc-tag">${v.fuel}</span>`;
-            if (v.euro) tags += `<span class="vc-tag euro">Euro ${v.euro}</span>`;
-            if (v.is_new) tags += `<span class="vc-tag new">NEW</span>`;
             if (v.retarder) tags += `<span class="vc-tag">Retarder</span>`;
             if (v.has_airco) tags += `<span class="vc-tag">A/C</span>`;
+            if (v.is_new) tags += `<span class="vc-tag new-tag">NEW</span>`;
+
+            const newBadge = v.is_new ? '<span class="vc-badge-new">NEW</span>' : '';
+            const usedBadge = !v.is_new ? '<span class="vc-badge-condition used">USED</span>' : '';
 
             card.innerHTML = `
-                <div class="vc-header">
-                    <span class="vc-brand">${v.brand || ''} ${v.model_extended || ''}</span>
-                    <span class="vc-price">${price}</span>
+                <div class="vc-img">
+                    ${createTruckSVG(v.brand, v.is_new)}
+                    ${newBadge}
+                    ${usedBadge}
                 </div>
-                <div class="vc-model">${v.cabin || ''} ${mileage ? '• ' + mileage : ''}</div>
-                <div class="vc-specs">${tags}</div>
-                <div class="vc-id">ID: ${v.vehicle_id}</div>
+                <div class="vc-body">
+                    <div class="vc-title">${v.brand || ''} ${v.model_extended || ''}</div>
+                    <div class="vc-subtitle">${v.cabin || ''} ${mileage ? '• ' + mileage : ''}</div>
+                    <div class="vc-specs-row">${tags}</div>
+                    <div class="vc-footer">
+                        <span class="vc-price">${price}</span>
+                        <span class="vc-mileage-small">${mileage}</span>
+                    </div>
+                    <div class="vc-id">Ref. no. ${v.vehicle_id}</div>
+                </div>
             `;
             return card;
         }
 
+        // ===================== TYPING =====================
         function showTyping() {
             const msgDiv = document.createElement('div');
             msgDiv.className = 'message bot';
             msgDiv.id = 'typing';
-
             msgDiv.innerHTML = `
-                <div class="message-avatar">🤖</div>
-                <div class="message-content">
+                <div class="msg-avatar">B</div>
+                <div class="msg-content">
                     <div class="typing-indicator">
                         <span></span><span></span><span></span>
                     </div>
@@ -699,6 +1461,7 @@
             if (el) el.remove();
         }
 
+        // ===================== SEND =====================
         async function sendMessage() {
             const text = inputEl.value.trim();
             if (!text) return;
@@ -735,6 +1498,10 @@
                 inputEl.focus();
             }
         }
+
+        // ===================== INIT =====================
+        loadMeta();
     </script>
 </body>
+
 </html>

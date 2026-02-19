@@ -10,6 +10,8 @@ import uuid
 from contextlib import asynccontextmanager
 from pathlib import Path
 
+import pandas as pd
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse
@@ -18,7 +20,7 @@ from langchain_core.messages import HumanMessage
 
 from app.agents.graph import get_compiled_graph
 from app.schemas.schemas import ChatRequest, ChatResponse, VehicleCard
-from app.services.data_loader import load_inventory, get_vehicle_by_id
+from app.services.data_loader import load_inventory, get_vehicle_by_id, get_dataframe, get_unique_values
 from app.tools.search_inventory import search_inventory_direct
 from app.schemas.schemas import SearchFilters
 
@@ -151,6 +153,48 @@ async def list_inventory(
     }
 
 
+@app.get("/meta.json")
+async def get_meta():
+    """Return filter metadata for the sidebar — unique values per dimension with counts."""
+    df = get_dataframe()
+    # Exclude damaged
+    df_clean = df[df.get("is_damaged", pd.Series([False]*len(df))).apply(
+        lambda x: str(x).strip().lower() not in ("true", "1", "yes") if pd.notna(x) else True
+    )]
+
+    def _count_by(col):
+        """Return sorted list of {value, count} dicts for a column."""
+        counts = df_clean[col].dropna().value_counts()
+        return [{"value": str(v), "count": int(c)} for v, c in counts.items()]
+
+    return {
+        "total": len(df_clean),
+        "brands": _count_by("brand"),
+        "configurations": _count_by("configuration"),
+        "euro_norms": sorted([int(x) for x in df_clean["euro"].dropna().unique() if int(x) > 0]),
+        "gearboxes": _count_by("gearbox"),
+        "fuels": _count_by("fuel"),
+        "conditions": {
+            "new": int(df_clean["is_new"].apply(lambda x: str(x).strip().lower() in ("true", "1", "yes") if pd.notna(x) else False).sum()),
+            "used": int((~df_clean["is_new"].apply(lambda x: str(x).strip().lower() in ("true", "1", "yes") if pd.notna(x) else False)).sum()),
+        },
+        "price_range": {
+            "min": float(df_clean["internet_price"].dropna().min()) if not df_clean["internet_price"].dropna().empty else 0,
+            "max": float(df_clean["internet_price"].dropna().max()) if not df_clean["internet_price"].dropna().empty else 0,
+        },
+        "power_range": {
+            "min": int(df_clean["power"].dropna().min()) if not df_clean["power"].dropna().empty else 0,
+            "max": int(df_clean["power"].dropna().max()) if not df_clean["power"].dropna().empty else 0,
+        },
+    }
+
+
+# Serve static files for frontend images
+IMAGES_DIR = FRONTEND_DIR / "images"
+if IMAGES_DIR.exists():
+    app.mount("/images", StaticFiles(directory=str(IMAGES_DIR)), name="images")
+
+
 @app.get("/", response_class=HTMLResponse)
 async def serve_frontend():
     """Serve the chat frontend."""
@@ -165,36 +209,47 @@ async def serve_frontend():
 # ---------------------------------------------------------------------------
 
 def _extract_vehicle_cards(messages) -> list[VehicleCard]:
-    """Extract vehicle data from tool call results in the message history."""
-    cards = []
-    seen_ids = set()
+    """Extract vehicle data from the LAST search_inventory tool call only.
 
-    for msg in messages:
+    Previously this iterated over ALL messages, causing cards from earlier
+    searches to accumulate.  Now it finds the most recent search_inventory
+    result and only returns those vehicles — so cards always match the
+    bot's latest recommendation.
+    """
+    # Find the LAST search_inventory tool message (most recent search)
+    last_search_msg = None
+    for msg in reversed(messages):
         if msg.type == "tool" and msg.name == "search_inventory":
-            try:
-                data = json.loads(msg.content)
-                for v in data.get("vehicles", []):
-                    vid = v.get("vehicle_id")
-                    if vid and vid not in seen_ids:
-                        seen_ids.add(vid)
-                        cards.append(VehicleCard(
-                            vehicle_id=vid,
-                            brand=v.get("brand"),
-                            model_extended=v.get("model_extended"),
-                            configuration=v.get("configuration"),
-                            cabin=v.get("cabin"),
-                            power=v.get("power"),
-                            euro=v.get("euro"),
-                            gearbox=v.get("gearbox"),
-                            fuel=v.get("fuel"),
-                            mileage=v.get("mileage"),
-                            internet_price=v.get("internet_price"),
-                            is_new=v.get("is_new"),
-                            retarder=v.get("retarder"),
-                            has_airco=v.get("has_airco"),
-                            bed_amount=v.get("bed_amount"),
-                        ))
-            except (json.JSONDecodeError, KeyError):
-                continue
+            last_search_msg = msg
+            break
+
+    if last_search_msg is None:
+        return []
+
+    cards = []
+    try:
+        data = json.loads(last_search_msg.content)
+        for v in data.get("vehicles", []):
+            vid = v.get("vehicle_id")
+            if vid:
+                cards.append(VehicleCard(
+                    vehicle_id=vid,
+                    brand=v.get("brand"),
+                    model_extended=v.get("model_extended"),
+                    configuration=v.get("configuration"),
+                    cabin=v.get("cabin"),
+                    power=v.get("power"),
+                    euro=v.get("euro"),
+                    gearbox=v.get("gearbox"),
+                    fuel=v.get("fuel"),
+                    mileage=v.get("mileage"),
+                    internet_price=v.get("internet_price"),
+                    is_new=v.get("is_new"),
+                    retarder=v.get("retarder"),
+                    has_airco=v.get("has_airco"),
+                    bed_amount=v.get("bed_amount"),
+                ))
+    except (json.JSONDecodeError, KeyError):
+        pass
 
     return cards

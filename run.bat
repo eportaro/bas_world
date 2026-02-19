@@ -8,7 +8,7 @@ echo.
 :: Check if venv exists
 if not exist "venv\Scripts\activate.bat" (
     echo [*] Creating virtual environment...
-    python -m venv venv
+    py -3.13 -m venv venv
     echo [*] Installing dependencies...
     call venv\Scripts\pip install -r requirements.txt -q
 )

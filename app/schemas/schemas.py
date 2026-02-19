@@ -109,7 +109,7 @@ class SearchFilters(BaseModel):
     min_beds: Optional[int] = Field(None, description="Minimum number of beds in cabin")
     is_damaged: Optional[bool] = Field(None, description="Include/exclude damaged vehicles (default: exclude)")
     sort_by: Optional[str] = Field("price_asc", description="Sort order: price_asc, price_desc, mileage_asc, power_desc")
-    limit: int = Field(10, description="Maximum number of results to return")
+    limit: int = Field(5, description="Maximum number of results to return")
 
 
 # ---------------------------------------------------------------------------
