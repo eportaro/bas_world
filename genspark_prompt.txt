@@ -1,0 +1,94 @@
+# Prompt analítico para GenSpark / AI Presentation Builder
+
+**Role:** Act as a Senior AI Product Manager & Technical Sales Lead.
+**Goal:** Create a high-impact, 10-slide presentation to defend the "BAS World Tractor Head Finder" solution.
+**Tone:** Professional, innovative, confident, and technically grounded.
+**Audience:** Technical stakeholders and Business executives (BAS World).
+**Key Message:** This is not just a chatbot; it's an "Agency-Grade", robust AI Consultant that drives sales.
+
+---
+
+## Presentation Structure (10 Slides)
+
+### Slide 1: Title Slide
+*   **Title:** BAS World AI Concierge
+*   **Subtitle:** The Future of Tractor Head Sales — Intelligent, Precise, Human-Like.
+*   **Visual:** A sleek, dark-mode futuristic truck interface (Glassmorphism style).
+*   **Content:** "An Agentic AI solution that understands specific needs, not just keywords."
+
+### Slide 2: The Challenge & Objective
+*   **Focus:** Mapping the Case Requirements.
+*   **Content:**
+    *   **Goal:** Build a chatbot that converses naturally, asks targeted questions, and advises users.
+    *   **Complexity:** 673+ unique vehicles, multilingual users, complex specs (Axles, Euro Norms).
+    *   **Our Solution:** A ReAct Agent architecture that combines the empathy of a consultant with the precision of a database engine.
+
+### Slide 3: The Solution Architecture (High-Level)
+*   **Focus:** Robust Engineering.
+*   **Visual:** A simplified flow diagram: User -> Frontend (FastAPI) -> Brain (LangGraph) -> Tools -> SQLite Memory.
+*   **Content:**
+    *   **Engine:** LangGraph (State Machine for complex reasoning).
+    *   **Brains:** Google Gemini 2.5 Flash (Fast, cost-effective).
+    *   **Infrastructure:** AWS ECS/Fargate (Terraform provisioned).
+    *   **Value:** Scalable, stateful, and enterprise-ready.
+
+### Slide 4: "Converses Naturally" (Feature Defense)
+*   **Focus:** Addressing "Conversational Behavior" req.
+*   **Content:**
+    *   *Problem:* Most bots are rigid.
+    *   *Our Fix:* "Consultant Persona" prompt engineering.
+    *   **Evidence:** It uses context memory (SQLite) to understand "show me cheaper ones" refers to previous context. It greets, adapts tone, and speaks 3+ languages.
+
+### Slide 5: The "ReAct" Engine (Reasoning + Acting)
+*   **Focus:** How it thinks.
+*   **Content:**
+    *   Explaining the "Loop": Think -> Act -> Observe.
+    *   **Step 1:** User asks vague question ("I need a truck").
+    *   **Step 2:** Agent pauses, asks clarifying questions (Budget? Usage?).
+    *   **Step 3:** Agent updates filters and executes precise search.
+    *   *Why this matters:* It mirrors a top sales rep's behavior.
+
+### Slide 6: Structured Search & Fault Tolerance (Tech Deep Dive)
+*   **Focus:** Handling data reality.
+*   **Content:**
+    *   **Smart Mapping:** Translates "Comfortable" -> `Cabin IN ('Globetrotter', 'Highline', 'Sleeper')`.
+    *   **Fault Tolerance:** How we handled the "Missing Airco Data" bug. Instead of blindly filtering (which returns 0 results), we infer features from models.
+    *   **Result:** 100% accurate matches, zero "hallucinated" trucks.
+
+### Slide 7: Scenario Demo: The "Advisory" Search
+*   **Focus:** Proving the "Advice" requirement (Scenario D).
+*   **Content:**
+    *   *User:* "What do you advise for heavy construction?"
+    *   **Agent Logic:** Uses internal Domain Knowledge (6x4 Axle, High HP).
+    *   **Outcome:** Explains *Why* (Consultative) before showing *What* (Product).
+    *   *Differentiation:* It doesn't just search; it teaches.
+
+### Slide 8: Premium User Experience (The "Wow" Factor)
+*   **Focus:** Frontend polish.
+*   **Visual:** Screenshot of the "Visual Brand Grid" and "Vehicle Cards".
+*   **Content:**
+    *   Typing indicators for realism.
+    *   Glassmorphism UI.
+    *   Interactive Sidebar that syncs with AI.
+    *   "360° Verified" badges for trust.
+
+### Slide 9: Infrastructure & Deployment
+*   **Focus:** Professional delivery.
+*   **Content:**
+    *   **Terraform:** One-click infrastructure (IaC).
+    *   **Docker:** Containerized for consistency.
+    *   **GitHub:** Clean, structured codebase ready for handover.
+
+### Slide 10: Conclusion & Future Roadmap
+*   **Focus:** Why hire/adopt this?
+*   **Content:**
+    *   **Summary:** Requirements Met 100%. User Experience Exceeded.
+    *   **Roadmap:** Voice interaction, WhatsApp integration, Multi-Agent handoffs.
+    *   **Closing:** "Ready to deploy. Ready to sell."
+
+---
+
+## Instructions for GenSpark
+*   Use screenshots of modern SaaS dashboards or dark-themed UI.
+*   Keep text minimal (bullet points), focus on **visual impact**.
+*   Use the "Evidence" points from the `solution_verification.md` file I uploaded to validate claims.
