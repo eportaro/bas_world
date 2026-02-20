@@ -1,0 +1,298 @@
+{
+  "DAF": [
+    {
+      "brand": "DAF",
+      "index": 1,
+      "filename": "daf_1.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-DAF-XF-480-4X2-2022_354663_g6AuF2Yjdptn1ZPbIQB9ttp7uiuElushUlfk.jpg",
+      "local_path": "images/DAF/daf_1.jpg"
+    },
+    {
+      "brand": "DAF",
+      "index": 2,
+      "filename": "daf_2.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-DAF-XF-480-4X2-2022_354662_toM9neb42BsquVIOBmtiSH4WkimznVAV58wS.jpg",
+      "local_path": "images/DAF/daf_2.jpg"
+    },
+    {
+      "brand": "DAF",
+      "index": 3,
+      "filename": "daf_3.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-DAF-XF-480-4X2-2021_354636_QSsw7jcJX2OJxwuBb1H47AhNdDoeGFz9eG1p.jpg",
+      "local_path": "images/DAF/daf_3.jpg"
+    },
+    {
+      "brand": "DAF",
+      "index": 4,
+      "filename": "daf_4.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-DAF-XG-480-4X2-Mega-2022_352122_FTZI2Cnvmvgq1uRaJrZrZk2jRwCwK3QK8uyC.jpg",
+      "local_path": "images/DAF/daf_4.jpg"
+    },
+    {
+      "brand": "DAF",
+      "index": 5,
+      "filename": "daf_5.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-DAF-XG-480-4X2-Mega-2022_352121_Wta52GE5FrmCV2ubjSwMdFB86L7BQgmifiox.jpg",
+      "local_path": "images/DAF/daf_5.jpg"
+    }
+  ],
+  "SCANIA": [
+    {
+      "brand": "SCANIA",
+      "index": 1,
+      "filename": "scania_1.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-Scania-S520-4X2-2019_355534_c94OpNL5uccwrLINtZAk6RYQie6iHRTkBsDf.jpg",
+      "local_path": "images/SCANIA/scania_1.jpg"
+    },
+    {
+      "brand": "SCANIA",
+      "index": 2,
+      "filename": "scania_2.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-Scania-R450-4X2-2017_354616_kd1ow6dzmRU9LT5ht4HLT18XJ1DoxauzWPTi.jpg",
+      "local_path": "images/SCANIA/scania_2.jpg"
+    },
+    {
+      "brand": "SCANIA",
+      "index": 3,
+      "filename": "scania_3.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-Scania-R450-4X2-2019_352340_eQijUtrZM9jiHiD3hMmYhUqoAQaj9LJcAmH9.jpg",
+      "local_path": "images/SCANIA/scania_3.jpg"
+    },
+    {
+      "brand": "SCANIA",
+      "index": 4,
+      "filename": "scania_4.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-Scania-S450-4X2-2020_351703_m7IFqMp9NHQ0koxP1oIy4vGLVmUQcLdStZzW.jpg",
+      "local_path": "images/SCANIA/scania_4.jpg"
+    },
+    {
+      "brand": "SCANIA",
+      "index": 5,
+      "filename": "scania_5.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-Scania-R410-4X2-2020_352939_ZTir42XlTH9bvE9SF3Db28dNASTPNUjBh3rU.jpg",
+      "local_path": "images/SCANIA/scania_5.jpg"
+    }
+  ],
+  "MERCEDES": [
+    {
+      "brand": "MERCEDES",
+      "index": 1,
+      "filename": "mercedes_1.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-Mercedes-Actros-1836-4X2-2018_355188_Y3QtNMQe70U9AFDn7Di9rxNSTnz3CONbXkTS.jpg",
+      "local_path": "images/MERCEDES/mercedes_1.jpg"
+    },
+    {
+      "brand": "MERCEDES",
+      "index": 2,
+      "filename": "mercedes_2.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-Mercedes-Actros-1845-4X2-2017_355017_2cZ62wn3fwgiG6RlviSgHRCQixTuK7lSio1M.jpg",
+      "local_path": "images/MERCEDES/mercedes_2.jpg"
+    },
+    {
+      "brand": "MERCEDES",
+      "index": 3,
+      "filename": "mercedes_3.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-Mercedes-Actros-1845-4X2-2019_354691_iPTy7BL1rfblO85GDbiiuxoBXhJfjxwuqZjL.jpg",
+      "local_path": "images/MERCEDES/mercedes_3.jpg"
+    },
+    {
+      "brand": "MERCEDES",
+      "index": 4,
+      "filename": "mercedes_4.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-Mercedes-Actros-1845-4X2-2020_354690_zn74KvmCWXTJi8oqErof9guuEmbjNBmREkJC.jpg",
+      "local_path": "images/MERCEDES/mercedes_4.jpg"
+    },
+    {
+      "brand": "MERCEDES",
+      "index": 5,
+      "filename": "mercedes_5.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-Mercedes-Actros-1845-4X2-2018_352373_1Vwdax3odBmQygyMqrZMqYuRHnJ6cJT35h6d.jpg",
+      "local_path": "images/MERCEDES/mercedes_5.jpg"
+    }
+  ],
+  "VOLVO": [
+    {
+      "brand": "VOLVO",
+      "index": 1,
+      "filename": "volvo_1.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-Volvo-FM-460-4X2-2016_355579_4wnDnADI4w8lNeNNhKrGgzMSRmoXCuTVnU3A.jpg",
+      "local_path": "images/VOLVO/volvo_1.jpg"
+    },
+    {
+      "brand": "VOLVO",
+      "index": 2,
+      "filename": "volvo_2.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-Volvo-FM-460-4X2-2015_355577_WiTJFrCpNF8ry9VX8rPUbV4T2zIS6895KmNF.jpg",
+      "local_path": "images/VOLVO/volvo_2.jpg"
+    },
+    {
+      "brand": "VOLVO",
+      "index": 3,
+      "filename": "volvo_3.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-Volvo-FH-420-4X2-2018_355250_GWP7k2spfGzx32CBrRwz2xZKJnBif95qyXKX.jpg",
+      "local_path": "images/VOLVO/volvo_3.jpg"
+    },
+    {
+      "brand": "VOLVO",
+      "index": 4,
+      "filename": "volvo_4.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-Volvo-FM-450-4X2-2014_354987_fHnGAqgXbgE4MG0qopZJURPoKwGigDeZsUTT.jpg",
+      "local_path": "images/VOLVO/volvo_4.jpg"
+    },
+    {
+      "brand": "VOLVO",
+      "index": 5,
+      "filename": "volvo_5.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-Volvo-FH-460-4X2-2020_354940_3m6hpLJxL7R05Vb2vHoM5u1ekfv2oD6LD6XX.jpg",
+      "local_path": "images/VOLVO/volvo_5.jpg"
+    }
+  ],
+  "MAN": [
+    {
+      "brand": "MAN",
+      "index": 1,
+      "filename": "man_1.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-MAN-TGX-18.500-4X2-2018_355915_IpInxG7SIC3OOKjkUD95N5j3wossn9XNAgCa.jpg",
+      "local_path": "images/MAN/man_1.jpg"
+    },
+    {
+      "brand": "MAN",
+      "index": 2,
+      "filename": "man_2.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-MAN-TGX-28.510-6X2-2021_354782_mbWPc5bAXlv7aREgCKuWk0wKzD4E4d8mnDi2.jpg",
+      "local_path": "images/MAN/man_2.jpg"
+    },
+    {
+      "brand": "MAN",
+      "index": 3,
+      "filename": "man_3.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-MAN-TGS-33.480-6X4-2015_354423_t8Gp6gXUj1iAhzp4SlCusqywxmFrEVnyLY23.jpg",
+      "local_path": "images/MAN/man_3.jpg"
+    },
+    {
+      "brand": "MAN",
+      "index": 4,
+      "filename": "man_4.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-MAN-TGX-18.470-4X2-2021_351700_Urls4c6gbXsHGE77DsaJbOBvdSRigQi2e1xe.jpg",
+      "local_path": "images/MAN/man_4.jpg"
+    },
+    {
+      "brand": "MAN",
+      "index": 5,
+      "filename": "man_5.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-MAN-TGS-18.470-4X2-2020_351693_JccMqI6cQPkvUbdiX5J7N1o0TryfI2isPD6Y.jpg",
+      "local_path": "images/MAN/man_5.jpg"
+    }
+  ],
+  "RENAULT": [
+    {
+      "brand": "RENAULT",
+      "index": 1,
+      "filename": "renault_1.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-Renault-T-440-4X2-2020_354396_EaCvGFhg3XjYFwSvPLFet4jpnK43EerHJxmp.jpg",
+      "local_path": "images/RENAULT/renault_1.jpg"
+    },
+    {
+      "brand": "RENAULT",
+      "index": 2,
+      "filename": "renault_2.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-Renault-T-520-4X2-2023_352366_0MOtIB1WEw4L5brBnUWIkv6famYRMYrY5Ukb.jpg",
+      "local_path": "images/RENAULT/renault_2.jpg"
+    },
+    {
+      "brand": "RENAULT",
+      "index": 3,
+      "filename": "renault_3.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-Renault-D-380-4X2-2017_349354_76Jo3ygFBv4jjFxCHi1xk4vNzhhB2w6nw6bw.jpg",
+      "local_path": "images/RENAULT/renault_3.jpg"
+    },
+    {
+      "brand": "RENAULT",
+      "index": 4,
+      "filename": "renault_4.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-Renault-C-480-4X2-2015_347609_H0VTpXoy83mGwTNQbegP3niqUvlYaTTblj12.jpg",
+      "local_path": "images/RENAULT/renault_4.jpg"
+    },
+    {
+      "brand": "RENAULT",
+      "index": 5,
+      "filename": "renault_5.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-Renault-T-460-4X2-2019_349083_ElECZtTIPzyO0asbO9HicpPlcBwSTeoifywC.jpg",
+      "local_path": "images/RENAULT/renault_5.jpg"
+    }
+  ],
+  "IVECO": [
+    {
+      "brand": "IVECO",
+      "index": 1,
+      "filename": "iveco_1.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/new-Trekker-Iveco-S-Way-500-4X2_351969_p1D3H3pM0SEMsTAjkI57N73umzuubKJKQVSx.jpg",
+      "local_path": "images/IVECO/iveco_1.jpg"
+    },
+    {
+      "brand": "IVECO",
+      "index": 2,
+      "filename": "iveco_2.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/new-Trekker-Iveco-S-Way-500-4X2_351964_Qi4qV2MpgnRJmWexagnR6lNGCXGLdU2dM6xt.jpg",
+      "local_path": "images/IVECO/iveco_2.jpg"
+    },
+    {
+      "brand": "IVECO",
+      "index": 3,
+      "filename": "iveco_3.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/new-Trekker-Iveco-S-Way-500-4X2_351962_nijN3GX74lE60Ow2NfPHoTLOFZVRBwDTKaDR.jpg",
+      "local_path": "images/IVECO/iveco_3.jpg"
+    },
+    {
+      "brand": "IVECO",
+      "index": 4,
+      "filename": "iveco_4.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/new-Trekker-Iveco-S-Way-500-4X2_351961_nijN3GX74lE60Ow2NfPHoTLOFZVRBwDTKaDR.jpg",
+      "local_path": "images/IVECO/iveco_4.jpg"
+    },
+    {
+      "brand": "IVECO",
+      "index": 5,
+      "filename": "iveco_5.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/new-Trekker-Iveco-S-Way-500-4X2_351960_nijN3GX74lE60Ow2NfPHoTLOFZVRBwDTKaDR.jpg",
+      "local_path": "images/IVECO/iveco_5.jpg"
+    }
+  ],
+  "FORD": [
+    {
+      "brand": "FORD",
+      "index": 1,
+      "filename": "ford_1.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-Ford-F-Max-500-4X2-2022_349616_H2Iu6JsU1edV3Pelv8iNpbZWip3MIT1n7BjK.jpg",
+      "local_path": "images/FORD/ford_1.jpg"
+    },
+    {
+      "brand": "FORD",
+      "index": 2,
+      "filename": "ford_2.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-Ford-F-Max-500-4X2-2022_349613_VT2UMVzNNsaIdfzQh9Bs1Nr6MJlVB7wgTINs.jpg",
+      "local_path": "images/FORD/ford_2.jpg"
+    },
+    {
+      "brand": "FORD",
+      "index": 3,
+      "filename": "ford_3.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-Ford-F-Max-500-4X2-2022_349611_xKcceAjY4qJYXbMpCDvLJDGTfQlXlJ9g199s.jpg",
+      "local_path": "images/FORD/ford_3.jpg"
+    },
+    {
+      "brand": "FORD",
+      "index": 4,
+      "filename": "ford_4.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-Ford-F-Max-500-4X2-2023_348024_EFpgGKd66zYGsOuw8t631raTcSGHJZ48TznK.jpg",
+      "local_path": "images/FORD/ford_4.jpg"
+    },
+    {
+      "brand": "FORD",
+      "index": 5,
+      "filename": "ford_5.jpg",
+      "source_url": "https://static.basworld.com/photos/vehicle/world/1080/used-Trekker-Ford-F-Max-500-4X2-2022_339211_lNgUihS8DrVoCmocZ3EkLWeiEDo698cbTt7h.jpg",
+      "local_path": "images/FORD/ford_5.jpg"
+    }
+  ]
+}

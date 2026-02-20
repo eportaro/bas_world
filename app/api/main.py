@@ -6,6 +6,8 @@ Exposes REST API endpoints for chat, inventory browsing, and health checks.
 from __future__ import annotations
 
 import json
+import os
+import time
 import uuid
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -23,6 +25,14 @@ from app.schemas.schemas import ChatRequest, ChatResponse, VehicleCard
 from app.services.data_loader import load_inventory, get_vehicle_by_id, get_dataframe, get_unique_values
 from app.tools.search_inventory import search_inventory_direct
 from app.schemas.schemas import SearchFilters
+from app.utils.logging import (
+    setup_logging,
+    log_user_message,
+    log_vehicle_cards,
+    log_chat_complete,
+    log_startup,
+    log_error,
+)
 
 # ---------------------------------------------------------------------------
 # App lifespan
@@ -31,9 +41,11 @@ from app.schemas.schemas import SearchFilters
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Startup / shutdown events."""
-    # Load inventory on startup
+    setup_logging()
     load_inventory()
-    print("[OK] Inventory loaded successfully")
+    model = os.getenv("OPENROUTER_MODEL", "google/gemini-2.5-flash")
+    port = int(os.getenv("PORT", "8080"))
+    log_startup(port, model)
     yield
 
 
@@ -85,9 +97,11 @@ async def health_check():
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
-    """Main chat endpoint — processes user messages through the multi-agent system."""
-    graph = get_graph()
+    """Main chat endpoint."""
+    t0 = time.time()
+    log_user_message(request.session_id, request.message)
 
+    graph = get_graph()
     config = {"configurable": {"thread_id": request.session_id}}
 
     try:
@@ -96,6 +110,7 @@ async def chat(request: ChatRequest):
             config=config,
         )
     except Exception as e:
+        log_error(f"Agent error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Agent error: {str(e)}")
 
     # Extract the last AI message
@@ -107,6 +122,10 @@ async def chat(request: ChatRequest):
 
     # Extract vehicle cards from tool call results
     vehicles = _extract_vehicle_cards(result["messages"])
+    log_vehicle_cards(vehicles)
+
+    elapsed_ms = (time.time() - t0) * 1000
+    log_chat_complete(elapsed_ms, len(vehicles))
 
     return ChatResponse(
         session_id=request.session_id,
@@ -209,47 +228,64 @@ async def serve_frontend():
 # ---------------------------------------------------------------------------
 
 def _extract_vehicle_cards(messages) -> list[VehicleCard]:
-    """Extract vehicle data from the LAST search_inventory tool call only.
+    """Extract vehicle data from the LAST tool call — handles all tool types.
 
-    Previously this iterated over ALL messages, causing cards from earlier
-    searches to accumulate.  Now it finds the most recent search_inventory
-    result and only returns those vehicles — so cards always match the
-    bot's latest recommendation.
+    Supports:
+      - search_inventory  → vehicles[] array
+      - compare_vehicles  → vehicles[] array (only compared ones)
+      - get_vehicle_details → single vehicle object
     """
-    # Find the LAST search_inventory tool message (most recent search)
-    last_search_msg = None
+    # Find the LAST tool message (any tool)
+    last_tool_msg = None
     for msg in reversed(messages):
-        if msg.type == "tool" and msg.name == "search_inventory":
-            last_search_msg = msg
+        if msg.type == "tool" and msg.name in ("search_inventory", "compare_vehicles", "get_vehicle_details"):
+            last_tool_msg = msg
             break
 
-    if last_search_msg is None:
+    if last_tool_msg is None:
         return []
 
     cards = []
     try:
-        data = json.loads(last_search_msg.content)
-        for v in data.get("vehicles", []):
-            vid = v.get("vehicle_id")
-            if vid:
-                cards.append(VehicleCard(
-                    vehicle_id=vid,
-                    brand=v.get("brand"),
-                    model_extended=v.get("model_extended"),
-                    configuration=v.get("configuration"),
-                    cabin=v.get("cabin"),
-                    power=v.get("power"),
-                    euro=v.get("euro"),
-                    gearbox=v.get("gearbox"),
-                    fuel=v.get("fuel"),
-                    mileage=v.get("mileage"),
-                    internet_price=v.get("internet_price"),
-                    is_new=v.get("is_new"),
-                    retarder=v.get("retarder"),
-                    has_airco=v.get("has_airco"),
-                    bed_amount=v.get("bed_amount"),
-                ))
+        data = json.loads(last_tool_msg.content)
+
+        # get_vehicle_details returns a single vehicle dict (no "vehicles" key)
+        if last_tool_msg.name == "get_vehicle_details":
+            if "vehicle_id" in data:
+                cards.append(_dict_to_card(data))
+        else:
+            # search_inventory and compare_vehicles both return {"vehicles": [...]}
+            for v in data.get("vehicles", []):
+                if v.get("vehicle_id"):
+                    cards.append(_dict_to_card(v))
     except (json.JSONDecodeError, KeyError):
         pass
 
     return cards
+
+
+def _dict_to_card(v: dict) -> VehicleCard:
+    """Convert a vehicle dict to a VehicleCard."""
+    return VehicleCard(
+        vehicle_id=v.get("vehicle_id"),
+        brand=v.get("brand"),
+        model_extended=v.get("model_extended"),
+        configuration=v.get("configuration"),
+        cabin=v.get("cabin"),
+        power=v.get("power"),
+        euro=v.get("euro"),
+        gearbox=v.get("gearbox"),
+        fuel=v.get("fuel"),
+        mileage=v.get("mileage"),
+        internet_price=v.get("internet_price"),
+        is_new=v.get("is_new"),
+        retarder=v.get("retarder"),
+        has_airco=v.get("has_airco"),
+        bed_amount=v.get("bed_amount"),
+        suspension=v.get("suspension"),
+        total_weight=v.get("total_weight"),
+        wheelbase=v.get("wheelbase"),
+        registered_at=v.get("registered_at"),
+        production_at=v.get("production_at"),
+        has_hydraulics=v.get("has_hydraulics"),
+    )

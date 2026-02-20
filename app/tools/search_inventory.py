@@ -1,6 +1,6 @@
 """
-Inventory search tool — structured filtering of the tractor head inventory.
-This is the primary tool used by the agents to query the CSV data.
+Search inventory tool - structured filtering of the tractor head inventory.
+Includes structured logging for agent tracing.
 """
 
 from __future__ import annotations
@@ -10,6 +10,16 @@ from typing import Optional
 
 import pandas as pd
 from langchain_core.tools import tool
+
+from app.utils.logging import (
+    log_tool_call,
+    log_search_results,
+    log_compare_results,
+    log_detail_result,
+    log_success,
+    log_warning,
+    log_error,
+)
 
 from app.schemas.schemas import SearchFilters, TractorHead
 from app.services.data_loader import get_dataframe, _row_to_tractor_head
@@ -52,9 +62,20 @@ def _apply_filters(df: pd.DataFrame, filters: SearchFilters) -> pd.DataFrame:
     if filters.fuel:
         mask &= df["fuel"].fillna("").str.lower() == filters.fuel.lower()
 
-    # Cabin (contains match — user might say "sleeper" and it should match "SLEEPER HIGH CAB")
+    # Cabin (Smart match for "SLEEPER" and other premium terms)
     if filters.cabin:
-        mask &= df["cabin"].fillna("").str.upper().str.contains(filters.cabin.upper(), na=False)
+        val = filters.cabin.upper()
+        if val == "SLEEPER":
+            # "Sleeper" should match all premium cabins with beds
+            sleeper_keywords = [
+                "SLEEPER", "SPACE", "HIGHLINE", "GLOBETROTTER", "GIGASPACE", 
+                "TOPLINE", "SUPER", "BIGSPACE", "STREAMSPACE", "LONG", "L-CAB", "R-SERIES", "S-SERIES"
+            ]
+            # Create regex pattern for any of these
+            pattern = "|".join(sleeper_keywords)
+            mask &= df["cabin"].fillna("").str.upper().str.contains(pattern, regex=True, na=False)
+        else:
+            mask &= df["cabin"].fillna("").str.upper().str.contains(val, na=False)
 
     # Price range
     if filters.min_price is not None:
@@ -81,11 +102,13 @@ def _apply_filters(df: pd.DataFrame, filters: SearchFilters) -> pd.DataFrame:
         else:
             mask &= (df["is_new"] != True) | df["is_new"].isna()
 
-    if filters.has_retarder is not None and filters.has_retarder:
-        mask &= df["retarder"] == True
+    # has_retarder: disabled — 'retarder' column in CSV is unreliable (often empty/NaN)
+    # if filters.has_retarder is not None and filters.has_retarder:
+    #     mask &= df["retarder"] == True
 
-    if filters.has_airco is not None and filters.has_airco:
-        mask &= df["has_airco"] == True
+    # has_airco: disabled — 'has_airco' column is empty for most records in the CSV
+    # if filters.has_airco is not None and filters.has_airco:
+    #     mask &= df["has_airco"] == True
 
     if filters.min_beds is not None:
         mask &= df["bed_amount"] >= filters.min_beds
@@ -146,7 +169,11 @@ def search_inventory(filters_json: str) -> str:
         filters_dict = json.loads(filters_json)
         filters = SearchFilters(**filters_dict)
     except Exception as e:
+        log_error(f"Invalid filters: {str(e)}")
         return json.dumps({"error": f"Invalid filters: {str(e)}", "count": 0, "vehicles": []})
+
+    # Log the tool call with filters
+    log_tool_call("search_inventory", filters_dict)
 
     df = get_dataframe()
     results_df = _apply_filters(df, filters)
@@ -154,10 +181,14 @@ def search_inventory(filters_json: str) -> str:
     vehicles = [_row_to_tractor_head(row) for _, row in results_df.iterrows()]
     total_matching = len(vehicles)
 
+    # Log results
+    vehicle_dicts = [v.model_dump() for v in vehicles]
+    log_search_results(total_matching, vehicle_dicts)
+
     output = {
         "count": total_matching,
         "filters_applied": filters_dict,
-        "vehicles": [v.model_dump() for v in vehicles],
+        "vehicles": vehicle_dicts,
         "summaries": [v.to_summary() for v in vehicles],
     }
     return json.dumps(output, default=str)

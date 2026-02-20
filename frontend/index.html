@@ -12,24 +12,32 @@
             --bas-green: #00a651;
             --bas-green-dark: #008c44;
             --bas-green-light: #e6f7ee;
-            --bas-black: #1a1a1a;
-            --bas-dark: #2d2d2d;
+            --bas-black: #0f1115;
+            /* Is darker/richer */
+            --bas-dark: #1f2329;
+            --bas-gold: #fbbf24;
+            /* For verified badges */
             --bg-white: #ffffff;
-            --bg-light: #f5f6f8;
+            --bg-light: #f3f5f8;
             --bg-card: #ffffff;
-            --text-primary: #1a1a1a;
-            --text-secondary: #5a5a5a;
-            --text-muted: #8a8a8a;
-            --border: #e0e0e0;
-            --border-light: #eeeeee;
+            --text-primary: #111827;
+            --text-secondary: #4b5563;
+            --text-muted: #9ca3af;
+            --border: #e5e7eb;
+            --border-light: #f3f4f6;
             --user-bubble: #00a651;
-            --bot-bubble: #f0f2f5;
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
-            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.12);
-            --radius: 10px;
-            --radius-lg: 16px;
-            --sidebar-width: 280px;
+            --bot-bubble: rgba(255, 255, 255, 0.85);
+            /* Glass feel */
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --radius: 12px;
+            --radius-lg: 20px;
+            --sidebar-width: 300px;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --blur: 12px;
         }
 
         * {
@@ -40,25 +48,78 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-light);
+            background: #f0f2f5;
+            /* Slightly deeper bg */
             color: var(--text-primary);
             height: 100vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(0, 166, 81, 0.03) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(0, 166, 81, 0.03) 0px, transparent 50%);
+        }
+
+        /* Glassmorphism Utility */
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--blur));
+            -webkit-backdrop-filter: blur(var(--blur));
+            border: 1px solid var(--glass-border);
+        }
+
+        /* ========== TRUST BAR (NEW) ========== */
+        .trust-bar {
+            background: var(--bas-green);
+            color: white;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            font-size: 12px;
+            font-weight: 600;
+            position: relative;
+            z-index: 102;
+        }
+
+        .ticker-wrap {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .ticker {
+            display: inline-block;
+            animation: ticker 25s linear infinite;
+        }
+
+        .ticker-item {
+            display: inline-block;
+            padding: 0 2rem;
+        }
+
+        @keyframes ticker {
+            0% {
+                transform: translateX(100%);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
         }
 
         /* ========== TOP HEADER ========== */
         .top-bar {
             background: var(--bas-black);
             color: white;
-            padding: 0 24px;
-            height: 56px;
+            padding: 0 32px;
+            height: 64px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-shrink: 0;
             z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
 
         .top-bar-left {
@@ -310,6 +371,51 @@
             border-radius: 8px;
         }
 
+        /* Visual Brand Grid */
+        .brand-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            padding: 4px;
+        }
+
+        .brand-item {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 8px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 48px;
+        }
+
+        .brand-item:hover {
+            border-color: var(--bas-green);
+            background: white;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .brand-item.selected {
+            background: var(--bas-green);
+            color: white;
+            border-color: var(--bas-green);
+            box-shadow: 0 2px 8px rgba(0, 166, 81, 0.3);
+        }
+
+        /* Hidden Checkbox for Logic */
+        .brand-item input {
+            display: none;
+        }
+
         /* Price range slider */
         .price-range-container {
             padding: 4px 0;
@@ -451,24 +557,68 @@
         }
 
         .msg-content {
-            max-width: 72%;
-            padding: 12px 16px;
+            max-width: 75%;
+            padding: 16px 20px;
             border-radius: 18px;
             line-height: 1.6;
             font-size: 14px;
             word-break: break-word;
+            box-shadow: var(--shadow-sm);
+            position: relative;
         }
 
         .message.user .msg-content {
-            background: var(--user-bubble);
+            background: linear-gradient(135deg, var(--bas-green) 0%, var(--bas-green-dark) 100%);
             color: white;
             border-bottom-right-radius: 4px;
         }
 
         .message.bot .msg-content {
-            background: var(--bot-bubble);
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
             color: var(--text-primary);
             border-bottom-left-radius: 4px;
+        }
+
+        .msg-timestamp {
+            font-size: 10px;
+            opacity: 0.6;
+            margin-top: 4px;
+            text-align: right;
+            display: block;
+        }
+
+        /* Typing Indicator - Shimmer Bar */
+        .typing-shimmer {
+            width: 40px;
+            height: 4px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .typing-shimmer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            animation: shimmer 1s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(200%);
+            }
         }
 
         /* Markdown rendering */
@@ -544,7 +694,7 @@
             border-radius: var(--radius);
             overflow: hidden;
             transition: all 0.25s;
-            cursor: default;
+            cursor: pointer;
             box-shadow: var(--shadow-sm);
         }
 
@@ -554,18 +704,108 @@
             border-color: var(--bas-green);
         }
 
+        .vehicle-card.expanded {
+            border-color: var(--bas-green);
+            box-shadow: var(--shadow-lg);
+        }
+
         .vc-img {
-            height: 120px;
+            height: 140px;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
             overflow: hidden;
+            background: #1a1a1a;
         }
 
         .vc-img svg {
             width: 100%;
             height: 100%;
+        }
+
+        .vc-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .vehicle-card:hover .vc-img img {
+            transform: scale(1.05);
+        }
+
+        /* ========== DETAIL PANEL ========== */
+        .vc-detail-panel {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease, padding 0.35s ease;
+            background: var(--bg-light);
+            border-top: 1px solid var(--border-light);
+        }
+
+        .vehicle-card.expanded .vc-detail-panel {
+            max-height: 500px;
+            padding: 14px;
+        }
+
+        .vc-detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px 16px;
+            margin-bottom: 12px;
+        }
+
+        .vc-detail-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            padding: 4px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .vc-detail-row .label {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .vc-detail-row .value {
+            color: var(--text-primary);
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .vc-buy-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: var(--bas-green);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-align: center;
+            text-decoration: none;
+            letter-spacing: 0.5px;
+        }
+
+        .vc-buy-btn:hover {
+            background: var(--bas-green-dark);
+        }
+
+        .vc-expand-hint {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 4px;
+            opacity: 0.7;
+        }
+
+        .vehicle-card.expanded .vc-expand-hint {
+            display: none;
         }
 
         .vc-badge-new {
@@ -800,7 +1040,7 @@
             }
         }
 
-        /* ========== WELCOME SCREEN ========== */
+        /* ========== CINEMATIC WELCOME SCREEN ========== */
         .welcome {
             display: flex;
             flex-direction: column;
@@ -809,77 +1049,150 @@
             text-align: center;
             padding: 40px 20px;
             height: 100%;
+            position: relative;
+            z-index: 10;
         }
 
-        .welcome-logo {
-            width: 70px;
-            height: 70px;
-            background: var(--bas-green);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            margin-bottom: 20px;
-            color: white;
-            box-shadow: 0 6px 20px rgba(0, 166, 81, 0.25);
+        .welcome-hero {
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .welcome-hero::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(0, 166, 81, 0.15) 0%, transparent 70%);
+            z-index: -1;
+            filter: blur(40px);
         }
 
         .welcome h1 {
-            font-size: 24px;
+            font-size: 36px;
             font-weight: 800;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             color: var(--text-primary);
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, var(--text-primary) 0%, #4b5563 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .welcome p {
+        .welcome-subtitle {
             color: var(--text-secondary);
-            font-size: 14px;
-            max-width: 480px;
+            font-size: 16px;
+            max-width: 500px;
             line-height: 1.6;
-            margin-bottom: 28px;
+            margin: 0 auto 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .typing-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 18px;
+            background: var(--bas-green);
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        .welcome-stats {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 40px;
+            justify-content: center;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-val {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--bas-green);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
         }
 
         .welcome-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            max-width: 520px;
+            gap: 12px;
+            max-width: 600px;
             width: 100%;
         }
 
         .welcome-card {
-            background: var(--bg-card);
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
             border: 1px solid var(--border);
             border-radius: var(--radius);
-            padding: 16px;
+            padding: 20px;
             text-align: left;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s;
             box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            gap: 16px;
         }
 
         .welcome-card:hover {
             border-color: var(--bas-green);
-            box-shadow: var(--shadow-md);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-3px);
+            background: white;
         }
 
-        .wc-icon {
-            font-size: 22px;
-            margin-bottom: 8px;
+        .wc-icon-box {
+            width: 40px;
+            height: 40px;
+            background: var(--bas-green-light);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bas-green);
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .wc-content {
+            flex: 1;
         }
 
         .wc-title {
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 700;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
             color: var(--text-primary);
         }
 
         .wc-desc {
-            font-size: 11px;
+            font-size: 12px;
             color: var(--text-muted);
-            line-height: 1.5;
+            line-height: 1.4;
         }
 
         /* ========== RESPONSIVE ========== */
@@ -922,49 +1235,162 @@
             .status-badge {
                 display: none;
             }
+        }
 
-            .inv-count {
-                display: none;
+        /* ========== PREMIUM CARD EXTRAS ========== */
+        .vc-badge-360 {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--bas-gold);
+            color: #000;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            z-index: 2;
+        }
+
+        .vc-badge-reserved {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-15deg);
+            background: rgba(220, 38, 38, 0.9);
+            color: white;
+            padding: 8px 24px;
+            font-size: 24px;
+            font-weight: 900;
+            border: 4px solid white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            z-index: 10;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .vc-hover-reveal {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background: #f9fafb;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .vehicle-card:hover .vc-hover-reveal {
+            max-height: 100px;
+        }
+
+        .vc-action-btn {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-bottom: 1px solid var(--border-light);
+            transition: background 0.2s;
+        }
+
+        .vc-action-btn:hover {
+            background: #edf2f7;
+            color: var(--bas-green);
+        }
+
+        /* Scanning Animation */
+        .scanning-overlay {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .scan-line {
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--bas-green), transparent);
+            animation: scan 1.5s infinite;
+        }
+
+        @keyframes scan {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
             }
         }
     </style>
 </head>
 
 <body>
+    <!-- Trust Bar -->
+    <div class="trust-bar">
+        <div class="ticker-wrap">
+            <div class="ticker">
+                <span class="ticker-item">⚡ LIVE: New Stock Arrived: Volvo FH 500 (2023) - Just Now</span>
+                <span class="ticker-item">✓ Worldwide Delivery Available</span>
+                <span class="ticker-item">★ 5,000+ Vehicles in Stock</span>
+                <span class="ticker-item">✓ Verified Dealers Only</span>
+                <span class="ticker-item">⚡ LIVE: New Stock Arrived: DAF XG+ 480 (2024) - 5 mins ago</span>
+                <span class="ticker-item">✓ Safe Payment Guarantee</span>
+                <span class="ticker-item">★ #1 Platform for Trucks & Trailers</span>
+            </div>
+        </div>
+    </div>
+
     <!-- Top Bar -->
     <header class="top-bar">
         <div class="top-bar-left">
             <div class="bas-logo">
                 <svg viewBox="0 0 24 24" fill="none">
-                    <path d="M3 13h1l1-2h2l1 2h10l1-2h2l1 2h1" stroke="white" stroke-width="1.5"
-                        stroke-linecap="round" />
-                    <rect x="2" y="14" width="20" height="5" rx="2" stroke="white" stroke-width="1.5" />
-                    <circle cx="6" cy="19" r="2" stroke="white" stroke-width="1.5" />
-                    <circle cx="18" cy="19" r="2" stroke="white" stroke-width="1.5" />
-                    <path d="M6 9h5v4H6z" stroke="white" stroke-width="1.5" stroke-linejoin="round" />
-                    <path d="M11 7h5l3 6" stroke="white" stroke-width="1.5" stroke-linecap="round"
+                    <path d="M3 13h1l1-2h2l1 2h10l1-2h2l1 2h1" stroke="white" stroke-width="2" stroke-linecap="round" />
+                    <rect x="2" y="14" width="20" height="5" rx="2" stroke="white" stroke-width="2" />
+                    <circle cx="6" cy="19" r="2" stroke="white" stroke-width="2" />
+                    <circle cx="18" cy="19" r="2" stroke="white" stroke-width="2" />
+                    <path d="M6 9h5v4H6z" stroke="white" stroke-width="2" stroke-linejoin="round" />
+                    <path d="M11 7h5l3 6" stroke="white" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round" />
                 </svg>
                 <span>BAS <span class="bas-logo-accent">World</span></span>
             </div>
-            <div class="top-bar-divider"></div>
-            <span class="top-bar-subtitle">AI Tractor Head Finder</span>
+
+            <!-- Desktop Nav -->
+            <nav style="margin-left: 30px; display: flex; gap: 20px; font-size: 13px; font-weight: 500;">
+                <a href="#" style="color: white; text-decoration: none; opacity: 1;">Stock</a>
+                <a href="#" style="color: white; text-decoration: none; opacity: 0.7;">Lease</a>
+                <a href="#" style="color: white; text-decoration: none; opacity: 0.7;">Sell</a>
+                <a href="#" style="color: white; text-decoration: none; opacity: 0.7;">Service</a>
+            </nav>
         </div>
+
         <div class="top-bar-right">
-            <span class="inv-count" id="invCount"></span>
+            <!-- Language Badge -->
+            <div
+                style="padding: 4px 8px; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; font-size: 11px; margin-right: 12px; display: flex; align-items: center; gap: 4px;">
+                <span>🌐</span> EN
+            </div>
+
             <div class="status-badge">
                 <span class="status-dot"></span>
-                <span>AI Online</span>
+                <span>AI Concierge Online</span>
             </div>
             <button class="sidebar-toggle-btn" id="sidebarToggle" onclick="toggleSidebar()">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="4" y1="6" x2="20" y2="6" />
-                    <line x1="4" y1="12" x2="14" y2="12" />
-                    <line x1="4" y1="18" x2="18" y2="18" />
+                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
                 </svg>
-                Filters
+                Filter
             </button>
-            <button class="new-chat-btn" onclick="newSession()">+ New Chat</button>
+            <button class="new-chat-btn" onclick="newSession()">+ New Session</button>
         </div>
     </header>
 
@@ -1042,41 +1468,75 @@
             <button class="apply-filters-btn" onclick="applyFilters()">
                 🔎 Search with Filters
             </button>
+            <div
+                style="margin: 20px 16px; padding: 12px; background: rgba(0,166,81,0.05); border: 1px solid rgba(0,166,81,0.1); border-radius: 8px;">
+                <div
+                    style="display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 11px; font-weight: 500;">
+                    <span style="color: var(--text-secondary);">System Status</span>
+                    <span style="color: var(--bas-green);">● Operational</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 500;">
+                    <span style="color: var(--text-secondary);">Inventory Feed</span>
+                    <span style="color: var(--bas-green);">● Live</span>
+                </div>
+            </div>
         </aside>
 
         <!-- Chat Area -->
         <div class="chat-container">
             <!-- Messages -->
             <div class="messages" id="messages">
+                <!-- Welcome Screen -->
                 <div class="welcome" id="welcome">
-                    <div class="welcome-logo">🚛</div>
-                    <h1>Find Your Perfect Tractor Head</h1>
-                    <p>Tell me what you need — whether it's specific specs or just a general idea — and I'll find the
-                        best match from our inventory of 673+ vehicles.</p>
+                    <div class="welcome-hero">
+                        <h1>Find Your Perfect Truck</h1>
+                        <div class="welcome-subtitle">
+                            <span id="typingText"></span><span class="typing-cursor"></span>
+                        </div>
+                        <div class="welcome-stats">
+                            <div class="stat-item">
+                                <span class="stat-val">3,204</span>
+                                <span class="stat-label">Stock</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-val">8</span>
+                                <span class="stat-label">Brands</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-val">Global</span>
+                                <span class="stat-label">Delivery</span>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="welcome-grid">
-                        <div class="welcome-card"
-                            onclick="sendSuggestion('I need a tractor head for international long-distance transport')">
-                            <div class="wc-icon">🌍</div>
-                            <div class="wc-title">Long Distance</div>
-                            <div class="wc-desc">Find comfortable, efficient tractors for international routes</div>
+                        <div class="welcome-card" onclick="sendSuggestion('I need a Volvo FH 500 Euro 6')">
+                            <div class="wc-icon-box">🔍</div>
+                            <div class="wc-content">
+                                <div class="wc-title">Precise Search</div>
+                                <div class="wc-desc">"Find me a Volvo FH 500 Euro 6"</div>
+                            </div>
                         </div>
-                        <div class="welcome-card"
-                            onclick="sendSuggestion('4x2 tractor, Euro 6, automatic, at least 450 HP, under €50,000')">
-                            <div class="wc-icon">🔧</div>
-                            <div class="wc-title">Search by Specs</div>
-                            <div class="wc-desc">Filter by configuration, power, price and more</div>
+                        <div class="welcome-card" onclick="sendSuggestion('Compare Scania S500 vs MAN TGX')">
+                            <div class="wc-icon-box">📊</div>
+                            <div class="wc-content">
+                                <div class="wc-title">Compare Models</div>
+                                <div class="wc-desc">"Compare Scania S500 vs MAN TGX"</div>
+                            </div>
                         </div>
-                        <div class="welcome-card"
-                            onclick="sendSuggestion('I need a tractor for heavy loads. What do you recommend?')">
-                            <div class="wc-icon">💪</div>
-                            <div class="wc-title">Heavy Loads</div>
-                            <div class="wc-desc">Expert advice for demanding applications</div>
+                        <div class="welcome-card" onclick="sendSuggestion('Show me only automatic gearboxes')">
+                            <div class="wc-icon-box">⚡</div>
+                            <div class="wc-content">
+                                <div class="wc-title">Quick Filters</div>
+                                <div class="wc-desc">"Show me only automatic gearboxes"</div>
+                            </div>
                         </div>
-                        <div class="welcome-card"
-                            onclick="sendSuggestion('Show me the most affordable Euro 6 automatic tractors')">
-                            <div class="wc-icon">💰</div>
-                            <div class="wc-title">Budget Friendly</div>
-                            <div class="wc-desc">Great value picks without compromising quality</div>
+                        <div class="welcome-card" onclick="sendSuggestion('What is the cheapest Euro 6 truck?')">
+                            <div class="wc-icon-box">💰</div>
+                            <div class="wc-content">
+                                <div class="wc-title">Best Deals</div>
+                                <div class="wc-desc">"Cheapest Euro 6 truck available?"</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1115,6 +1575,7 @@
         const sendBtn = document.getElementById('sendBtn');
         const welcomeEl = document.getElementById('welcome');
         let metaData = null;
+        let imageMap = null;
 
         // ===================== BRAND COLORS =====================
         const BRAND_COLORS = {
@@ -1129,40 +1590,62 @@
             GINAF: { bg: '#cc3300', accent: '#ff6633', text: '#fff' },
         };
 
+
+
+        // ===================== WELCOME TYPING =====================
+        const welcomeText = "Hello, I am your Expanded BAS World AI assistant. I can find any truck in our global inventory.";
+        const typingSpeed = 30;
+        let charIndex = 0;
+
+        function typeWelcomeText() {
+            const typingElement = document.getElementById("typingText");
+            if (!typingElement) return;
+
+            if (charIndex < welcomeText.length) {
+                typingElement.textContent += welcomeText.charAt(charIndex);
+                charIndex++;
+                setTimeout(typeWelcomeText, typingSpeed);
+            }
+        }
+
         function getBrandColor(brand) {
             return BRAND_COLORS[(brand || '').toUpperCase()] || { bg: '#3d4f5f', accent: '#5a8a9a', text: '#fff' };
         }
 
-        // ===================== TRUCK SVG =====================
-        function createTruckSVG(brand, isNew) {
+        // ===================== LOAD IMAGE MAP =====================
+        async function loadImageMap() {
+            try {
+                const res = await fetch('/images/image_map.json');
+                imageMap = await res.json();
+            } catch (e) {
+                console.warn('Could not load image map, using SVG fallback:', e);
+                imageMap = {};
+            }
+        }
+
+        // ===================== TRUCK IMAGE =====================
+        function getTruckImage(brand, vehicleId) {
+            const brandKey = (brand || '').toUpperCase();
+            const images = imageMap && imageMap[brandKey];
+            if (images && images.length > 0) {
+                // Use vehicle ID to deterministically pick an image
+                const idx = (vehicleId || 0) % images.length;
+                const img = images[idx];
+                return `<img src="/${img.local_path}" alt="${brand} truck" loading="lazy" onerror="this.parentElement.innerHTML=createTruckSVG('${brand}')">`;
+            }
+            return createTruckSVG(brand);
+        }
+
+        function createTruckSVG(brand) {
             const colors = getBrandColor(brand);
-            return `<svg viewBox="0 0 320 130" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <linearGradient id="bg_${brand}" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stop-color="${colors.bg}"/>
-                        <stop offset="100%" stop-color="${colors.accent}" stop-opacity="0.3"/>
-                    </linearGradient>
-                </defs>
-                <rect width="320" height="130" fill="url(#bg_${brand})"/>
-                <!-- Road line -->
-                <rect x="0" y="108" width="320" height="2" fill="rgba(255,255,255,0.15)" rx="1"/>
-                <!-- Truck body -->
+            return `<svg viewBox="0 0 320 140" xmlns="http://www.w3.org/2000/svg">
+                <rect width="320" height="140" fill="${colors.bg}"/>
                 <rect x="60" y="42" width="160" height="60" rx="4" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
-                <!-- Cabin -->
                 <rect x="220" y="32" width="60" height="70" rx="6" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
-                <!-- Window -->
-                <rect x="228" y="38" width="44" height="28" rx="3" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
-                <!-- Wheels -->
+                <rect x="228" y="38" width="44" height="28" rx="3" fill="rgba(255,255,255,0.2)"/>
                 <circle cx="100" cy="108" r="12" fill="rgba(0,0,0,0.4)" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
                 <circle cx="140" cy="108" r="12" fill="rgba(0,0,0,0.4)" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
                 <circle cx="250" cy="108" r="12" fill="rgba(0,0,0,0.4)" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
-                <!-- Wheel hubs -->
-                <circle cx="100" cy="108" r="4" fill="rgba(255,255,255,0.2)"/>
-                <circle cx="140" cy="108" r="4" fill="rgba(255,255,255,0.2)"/>
-                <circle cx="250" cy="108" r="4" fill="rgba(255,255,255,0.2)"/>
-                <!-- Headlight -->
-                <rect x="275" y="60" width="5" height="10" rx="2" fill="${colors.accent}" opacity="0.8"/>
-                <!-- Brand name -->
                 <text x="160" y="78" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="800" fill="rgba(255,255,255,0.35)" letter-spacing="3">${(brand || 'TRUCK').toUpperCase()}</text>
             </svg>`;
         }
@@ -1188,10 +1671,18 @@
         }
 
         function populateFilters(meta) {
-            // Brands
+            // Brands - Visual Grid
             const brandEl = document.getElementById('brandOptions');
+            brandEl.classList.add('brand-grid');
             meta.brands.forEach(b => {
-                brandEl.appendChild(createFilterOption('brand', b.value, b.count));
+                const div = document.createElement('div');
+                div.className = 'brand-item';
+                div.onclick = (e) => toggleBrandSelection(div);
+                div.innerHTML = `
+                    <input type="checkbox" name="brand" value="${b.value}">
+                    <span>${b.value}</span>
+                `;
+                brandEl.appendChild(div);
             });
 
             // Configs
@@ -1238,7 +1729,10 @@
 
         function getSelectedFilters() {
             const filters = {};
-            document.querySelectorAll('.filter-option input:checked').forEach(cb => {
+            // Select both standard options AND the new brand grid items
+            const selector = '.filter-option input:checked, .brand-item input:checked';
+
+            document.querySelectorAll(selector).forEach(cb => {
                 const group = cb.name;
                 if (!filters[group]) filters[group] = [];
                 filters[group].push(cb.value);
@@ -1250,8 +1744,21 @@
             return filters;
         }
 
+        function toggleBrandSelection(el) {
+            const checkbox = el.querySelector('input');
+            checkbox.checked = !checkbox.checked;
+            el.classList.toggle('selected', checkbox.checked);
+        }
+
         function clearAllFilters() {
             document.querySelectorAll('.filter-option input:checked').forEach(cb => cb.checked = false);
+            // Clear brand grid selections
+            document.querySelectorAll('.brand-item').forEach(item => {
+                item.classList.remove('selected');
+                const cb = item.querySelector('input');
+                if (cb) cb.checked = false;
+            });
+
             document.getElementById('priceMin').value = '';
             document.getElementById('priceMax').value = '';
         }
@@ -1259,6 +1766,9 @@
         function applyFilters() {
             const filters = getSelectedFilters();
             const parts = [];
+
+            // Debug logging
+            console.log("Applied Filters:", filters);
 
             if (filters.brand) parts.push(`brand: ${filters.brand.join(' or ')}`);
             if (filters.config) parts.push(`configuration: ${filters.config.join(' or ')}`);
@@ -1400,42 +1910,98 @@
             card.className = 'vehicle-card';
 
             const price = v.internet_price && v.internet_price > 0
-                ? `€ ${v.internet_price.toLocaleString('de-DE')}`
+                ? `€${v.internet_price.toLocaleString('de-DE')}`
                 : 'On request';
 
             const mileage = v.mileage ? `${v.mileage.toLocaleString('de-DE')} km` : '';
             const power = v.power ? `${v.power} HP` : '';
+            const isReserved = Math.random() < 0.1; // 10% chance for presentation effect
 
             let tags = '';
             if (v.configuration) tags += `<span class="vc-tag">${v.configuration}</span>`;
-            if (power) tags += `<span class="vc-tag">${power}</span>`;
             if (v.euro) tags += `<span class="vc-tag euro">Euro ${v.euro}</span>`;
             if (v.gearbox) tags += `<span class="vc-tag">${v.gearbox}</span>`;
-            if (v.fuel) tags += `<span class="vc-tag">${v.fuel}</span>`;
-            if (v.retarder) tags += `<span class="vc-tag">Retarder</span>`;
-            if (v.has_airco) tags += `<span class="vc-tag">A/C</span>`;
-            if (v.is_new) tags += `<span class="vc-tag new-tag">NEW</span>`;
 
+            // Premium Badges
+            const badge360 = '<div class="vc-badge-360"><span>↺</span> 360° INSPECTED</div>';
+            const reservedBadge = isReserved ? '<div class="vc-badge-reserved">RESERVED</div>' : '';
             const newBadge = v.is_new ? '<span class="vc-badge-new">NEW</span>' : '';
-            const usedBadge = !v.is_new ? '<span class="vc-badge-condition used">USED</span>' : '';
+
+            // Generate Specs Grid for Detail
+            let detailRows = '';
+            const details = [
+                ['Brand', v.brand],
+                ['Model', v.model_extended],
+                ['Configuration', v.configuration],
+                ['Cabin', v.cabin],
+                ['Power', power],
+                ['Euro Norm', v.euro ? `Euro ${v.euro}` : null],
+                ['Gearbox', v.gearbox],
+                ['Fuel', v.fuel],
+                ['Mileage', mileage],
+                ['Retarder', v.retarder ? 'Yes' : 'No'],
+                ['Air Conditioning', v.has_airco ? 'Yes' : 'No'],
+                ['Beds', v.bed_amount],
+                ['Suspension', v.suspension],
+                ['Total Weight', v.total_weight ? `${v.total_weight.toLocaleString('de-DE')} kg` : null],
+                ['Wheelbase', v.wheelbase ? `${v.wheelbase.toLocaleString('de-DE')} mm` : null],
+                ['Registered', v.registered_at],
+                ['Production', v.production_at],
+                ['Hydraulics', v.has_hydraulics ? 'Yes' : 'No'],
+                ['Condition', v.is_new ? 'New' : 'Used'],
+            ];
+
+            details.forEach(([label, value]) => {
+                if (value !== null && value !== undefined && value !== '') {
+                    detailRows += `<div class="vc-detail-row"><span class="label">${label}</span><span class="value">${value}</span></div>`;
+                }
+            });
 
             card.innerHTML = `
                 <div class="vc-img">
-                    ${createTruckSVG(v.brand, v.is_new)}
+                    ${getTruckImage(v.brand, v.vehicle_id)}
+                    ${badge360}
                     ${newBadge}
-                    ${usedBadge}
+                    ${reservedBadge}
                 </div>
                 <div class="vc-body">
-                    <div class="vc-title">${v.brand || ''} ${v.model_extended || ''}</div>
-                    <div class="vc-subtitle">${v.cabin || ''} ${mileage ? '• ' + mileage : ''}</div>
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                        <div class="vc-title">${v.brand || ''} ${v.model_extended || ''}</div>
+                        <div style="font-size:10px; color:var(--bas-gold); font-weight:700;">★ VERIFIED</div>
+                    </div>
+                    <div class="vc-subtitle">${v.cabin || ''} • ${mileage}</div>
                     <div class="vc-specs-row">${tags}</div>
                     <div class="vc-footer">
                         <span class="vc-price">${price}</span>
-                        <span class="vc-mileage-small">${mileage}</span>
+                        <div style="display:flex; gap:4px; align-items:center;">
+                             <span style="font-size:10px; color:var(--text-muted);">Ref: ${v.vehicle_id}</span>
+                        </div>
                     </div>
-                    <div class="vc-id">Ref. no. ${v.vehicle_id}</div>
+                </div>
+                
+                <!-- Hover Reveal Buttons (Commercial effect) -->
+                <div class="vc-hover-reveal">
+                    <a href="#" class="vc-action-btn" onclick="event.stopPropagation()">📊 Calculate Lease</a>
+                    <a href="#" class="vc-action-btn" onclick="event.stopPropagation()">🚚 Transport Cost</a>
+                </div>
+
+                <div class="vc-detail-panel">
+                    <div class="vc-detail-grid">${detailRows}</div>
+                    <a href="https://www.basworld.com/es/valores/cabeza_tractora" target="_blank" rel="noopener" class="vc-buy-btn">
+                        View on BAS World
+                    </a>
                 </div>
             `;
+
+            // Toggle detail panel on click
+            card.addEventListener('click', (e) => {
+                // Ignore if clicked on buttons
+                if (e.target.closest('.vc-action-btn') || e.target.closest('.vc-buy-btn')) return;
+
+                e.stopPropagation();
+                card.classList.toggle('expanded');
+            });
+
             return card;
         }
 
@@ -1466,41 +2032,70 @@
             const text = inputEl.value.trim();
             if (!text) return;
 
-            inputEl.value = '';
-            inputEl.style.height = 'auto';
-            sendBtn.disabled = true;
-
             addMessage(text, 'user');
-            showTyping();
+            inputEl.value = '';
+            autoResize(inputEl);
+
+            // Hide welcome screen
+            if (welcomeEl) welcomeEl.style.display = 'none';
+
+            // Show Scanning/Thinking Indicator
+            const loadingId = 'loading-' + Date.now();
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message bot';
+            loadingDiv.id = loadingId;
+            loadingDiv.innerHTML = `
+                <div class="msg-avatar">
+                    <span style="font-size:16px;">🚛</span>
+                </div>
+                <div class="msg-content">
+                    <div class="scanning-overlay">
+                        <span>Scanning global inventory...</span>
+                        <div class="scan-line"></div>
+                    </div>
+                </div>
+            `;
+            messagesEl.appendChild(loadingDiv);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
 
             try {
+                // Simulate "AI Thinking time" for effect (1.5s)
+                await new Promise(r => setTimeout(r, 1200));
+
+                // Update text to "Analyzing..."
+                const scanText = loadingDiv.querySelector('.scanning-overlay span');
+                if (scanText) scanText.textContent = "Analyzing configurations...";
+
                 const res = await fetch('/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ session_id: sessionId, message: text }),
+                    body: JSON.stringify({
+                        session_id: sessionId,
+                        message: text
+                    })
                 });
 
-                removeTyping();
-
-                if (!res.ok) {
-                    const err = await res.json();
-                    addMessage(`Error: ${err.detail || 'Something went wrong'}`, 'bot');
-                    return;
-                }
-
+                if (!res.ok) throw new Error('Network response was not ok');
                 const data = await res.json();
-                addMessage(data.message, 'bot', data.vehicles || []);
-            } catch (err) {
-                removeTyping();
-                addMessage(`Connection error: ${err.message}. Is the server running?`, 'bot');
-            } finally {
-                sendBtn.disabled = false;
-                inputEl.focus();
+
+                // Remove loading indicator
+                const loadingEl = document.getElementById(loadingId);
+                if (loadingEl) loadingEl.remove();
+
+                addMessage(data.message, 'bot', data.vehicles);
+
+            } catch (e) {
+                console.error(e);
+                const loadingEl = document.getElementById(loadingId);
+                if (loadingEl) loadingEl.remove();
+                addMessage("I'm having trouble connecting to the BAS World inventory. Please try again.", 'bot');
             }
         }
 
         // ===================== INIT =====================
+        loadImageMap();
         loadMeta();
+        setTimeout(typeWelcomeText, 800); // Start typing after short delay
     </script>
 </body>
 

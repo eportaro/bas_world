@@ -121,6 +121,12 @@ def load_inventory(csv_path: str | Path | None = None) -> pd.DataFrame:
             lambda x: str(x).strip().upper() if pd.notna(x) else None
         )
 
+    # Normalize all boolean columns from CSV strings ("true"/"false") to Python booleans
+    BOOL_COLS = ["retarder", "is_new", "has_airco", "has_hydraulics", "has_crane", "is_damaged", "has_crane_hook"]
+    for col in BOOL_COLS:
+        if col in df.columns:
+            df[col] = df[col].map(_parse_bool)
+
     _df = df
     return df
 

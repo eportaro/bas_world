@@ -139,6 +139,13 @@ class VehicleCard(BaseModel):
     retarder: Optional[bool] = None
     has_airco: Optional[bool] = None
     bed_amount: Optional[int] = None
+    # Extra detail fields for expanded card view
+    suspension: Optional[str] = None
+    total_weight: Optional[int] = None
+    wheelbase: Optional[int] = None
+    registered_at: Optional[str] = None
+    production_at: Optional[str] = None
+    has_hydraulics: Optional[bool] = None
 
 
 class ChatResponse(BaseModel):

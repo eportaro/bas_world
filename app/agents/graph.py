@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import os
 import sqlite3
+import time
 from pathlib import Path
 
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -31,6 +32,12 @@ from app.tools.search_inventory import (
     compare_vehicles,
     get_vehicle_details,
     search_inventory,
+)
+from app.utils.logging import (
+    log_agent_thinking,
+    log_agent_response,
+    log_step,
+    setup_logging,
 )
 
 # ---------------------------------------------------------------------------
@@ -97,18 +104,35 @@ Want me to search our inventory with these specs?
 ```
 
 ## DOMAIN KNOWLEDGE (for advisory questions)
-- **Long distance**: 4x2, 450-530 HP, sleeper/highline cabin, automatic, retarder, Euro 6
-- **Heavy loads**: 6x4, 500+ HP, retarder, strong suspension
+- **Long distance**: 4x2, 450-530 HP, sleeper/highline/globetrotter cabin, automatic, Euro 6
+- **Heavy loads**: 6x4, 500+ HP, strong suspension
 - **Fuel efficient**: Euro 6, 400-460 HP, automatic
-- **Driver comfort**: Globetrotter/Gigaspace/Highline cabin, A/C, retarder, 2 beds
+- **Driver comfort**: Globetrotter/Gigaspace/Highline/Space cabin, automatic gearbox, 2+ beds — use cabin keyword filter to find these
 - **Budget friendly**: higher mileage acceptable, older models, lower Euro norms
 - **Regional/distribution**: 4x2 or 6x2, 350-450 HP, day cab or low sleeper
+
+## ⚠ PROGRESSIVE SEARCH STRATEGY (CRITICAL — READ CAREFULLY)
+When translating advisory knowledge into a search, NEVER apply all recommended specs at once.
+Too many filters combined = 0 results. Instead, use this 2‑step approach:
+
+**Step 1 — Broad search (2-3 core filters only):**
+Pick only the most important filters for the use case:
+- Long distance → `{"configuration": "4X2", "euro": 6, "gearbox": "automatic", "min_power": 400, "limit": 5}`
+- Heavy loads → `{"configuration": "6X4", "min_power": 450, "limit": 5}`
+- Budget → `{"sort_by": "price_asc", "limit": 5}`
+DO NOT include cabin, retarder, airco, or beds in the first search.
+
+**Step 2 — Narrow down (only if user asks):**
+Once you have results, THEN mention which ones have retarder, sleeper cabin, A/C, etc.
+Only add more filters if the user explicitly asks to narrow down.
+
+**Rule:** If your search returns 0 results, IMMEDIATELY retry with fewer filters (remove cabin, retarder, airco, min_power one at a time) before telling the user "no results."
 
 ## CRITICAL RULES
 - **NEVER invent vehicles**. Only reference trucks returned by your tools.
 - **ALWAYS search first** before recommending. Never guess stock.
 - **Include Vehicle IDs** so users can reference specific trucks (e.g., "ID: 271313").
-- If no results match, explain why and suggest relaxing 1-2 constraints.
+- If no results match, **relax filters and retry** before saying "no results found."
 - Keep search results to **5 vehicles max** (use limit=5) unless user asks for more.
 - When user says "cheaper" or "show me more options" → adjust filters from previous context.
 
@@ -120,16 +144,16 @@ Pass a JSON string with these optional fields:
 - euro: 2, 4, 5, 6
 - gearbox: automatic, manual, semi-automatic
 - fuel: diesel, electric, LNG, CNG
-- cabin: keyword like SLEEPER, HIGHLINE, GLOBETROTTER, GIGASPACE, SPACE, BIGSPACE
+- cabin: keyword like SLEEPER, HIGHLINE, GLOBETROTTER, GIGASPACE, SPACE, BIGSPACE — use this for comfort/premium searches
 - min_price / max_price: in EUR
 - min_power / max_power: in HP
 - max_mileage: in km
 - is_new: true/false
-- has_retarder: true
-- has_airco: true
 - min_beds: 1 or 2
 - sort_by: price_asc, price_desc, mileage_asc, power_desc
 - limit: number (default 5)
+
+⚠️ DO NOT use has_airco or has_retarder — those fields are not reliable in the inventory data. Use cabin keyword instead to find premium/comfort trucks.
 """
 
 # ---------------------------------------------------------------------------
@@ -145,6 +169,8 @@ TOOLS = [search_inventory, compare_vehicles, get_vehicle_details]
 
 def chatbot_node(state: AgentState) -> dict:
     """Main chatbot agent node — calls the LLM with tools bound."""
+    log_agent_thinking()
+
     llm = get_llm()
     llm_with_tools = llm.bind_tools(TOOLS)
 
@@ -154,7 +180,21 @@ def chatbot_node(state: AgentState) -> dict:
     if not messages or not isinstance(messages[0], SystemMessage):
         messages.insert(0, SystemMessage(content=SYSTEM_PROMPT))
 
+    t0 = time.time()
     response = llm_with_tools.invoke(messages)
+    elapsed = (time.time() - t0) * 1000
+
+    # Log what the agent decided
+    tool_calls = []
+    if hasattr(response, "tool_calls") and response.tool_calls:
+        tool_calls = [{"name": tc["name"], "args": tc.get("args", {})} for tc in response.tool_calls]
+
+    log_agent_response(
+        response.content or "",
+        tool_calls=tool_calls if tool_calls else None,
+    )
+    log_step(f"LLM latency: {elapsed:.0f}ms", "⏱️")
+
     return {"messages": [response]}
 
 
@@ -162,7 +202,9 @@ def should_continue(state: AgentState) -> str:
     """Decide whether to call tools or return the final response."""
     last_message = state["messages"][-1]
     if hasattr(last_message, "tool_calls") and last_message.tool_calls:
+        log_step("Routing → TOOLS node", "🔀", "\033[93m")
         return "tools"
+    log_step("Routing → END (final response)", "🔀", "\033[92m")
     return END
 
 
