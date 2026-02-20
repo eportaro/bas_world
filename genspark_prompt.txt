@@ -8,12 +8,22 @@
 
 ---
 
+## Visual Identity & Branding (CRITICAL)
+**Use these exact colors to match the BAS World Brand:**
+*   **Primary Green:** `#00a651` (Use for buttons, highlights, success states)
+*   **Dark Background:** `#1f2329` (Use for main slides, header backgrounds)
+*   **Accent Gold:** `#fbbf24` (Use for "Verified" badges and key callouts)
+*   **Text:** `#111827` (Dark Grey) or `#ffffff` (White on dark)
+*   **Style:** Clean, Glassmorphism, Rounded corners (Radius 12px), Technical Sans-Serif fonts (Inter).
+
+---
+
 ## Presentation Structure (10 Slides)
 
 ### Slide 1: Title Slide
 *   **Title:** BAS World AI Concierge
 *   **Subtitle:** The Future of Tractor Head Sales — Intelligent, Precise, Human-Like.
-*   **Visual:** A sleek, dark-mode futuristic truck interface (Glassmorphism style).
+*   **Visual:** A sleek, dark-mode futuristic truck interface (Glassmorphism style) using `#1f2329` background and `#00a651` accents.
 *   **Content:** "An Agentic AI solution that understands specific needs, not just keywords."
 
 ### Slide 2: The Challenge & Objective (Mapped to Case Study)
@@ -92,5 +102,6 @@
 
 ## Instructions for GenSpark
 *   **CRITICAL:** For each slide, pull the technical "Evidence" points directly from the uploaded `solution_verification.md` file.
+*   **COLORS:** Adhere strictly to the Visual Identity section (#00a651, #1f2329).
 *   Use screenshots of modern SaaS dashboards or dark-themed UI.
 *   Focus on **visual impact** but ensure the **Scenario Logic** (A, B, D) is clearly explained in the text.
