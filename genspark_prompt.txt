@@ -16,67 +16,69 @@
 *   **Visual:** A sleek, dark-mode futuristic truck interface (Glassmorphism style).
 *   **Content:** "An Agentic AI solution that understands specific needs, not just keywords."
 
-### Slide 2: The Challenge & Objective
-*   **Focus:** Mapping the Case Requirements.
+### Slide 2: The Challenge & Objective (Mapped to Case Study)
+*   **Focus:** Mapping the Case Requirements explicitly.
 *   **Content:**
     *   **Goal:** Build a chatbot that converses naturally, asks targeted questions, and advises users.
     *   **Complexity:** 673+ unique vehicles, multilingual users, complex specs (Axles, Euro Norms).
     *   **Our Solution:** A ReAct Agent architecture that combines the empathy of a consultant with the precision of a database engine.
+    *   **Verification:** Satisfies "Converses naturally" and "Asks targeted questions" requirements.
 
 ### Slide 3: The Solution Architecture (High-Level)
 *   **Focus:** Robust Engineering.
-*   **Visual:** A simplified flow diagram: User -> Frontend (FastAPI) -> Brain (LangGraph) -> Tools -> SQLite Memory.
+*   **Visual:** A simplified functional diagram: `User` -> `Frontend (FastAPI)` -> `Brain (LangGraph)` -> `Tools` -> `SQLite Memory`.
 *   **Content:**
-    *   **Engine:** LangGraph (State Machine for complex reasoning).
+    *   **Engine:** **LangGraph** (State Machine implementation: `chatbot_node` ↔ `tools_node`).
     *   **Brains:** Google Gemini 2.5 Flash (Fast, cost-effective).
-    *   **Infrastructure:** AWS ECS/Fargate (Terraform provisioned).
+    *   **Infrastructure:** AWS ECS/Fargate + S3 (Fully provisioned via **Terraform**).
     *   **Value:** Scalable, stateful, and enterprise-ready.
 
-### Slide 4: "Converses Naturally" (Feature Defense)
-*   **Focus:** Addressing "Conversational Behavior" req.
+### Slide 4: "Converses Naturally" (Detailed Defense)
+*   **Focus:** Evidence for "Conversational Behavior".
 *   **Content:**
-    *   *Problem:* Most bots are rigid.
-    *   *Our Fix:* "Consultant Persona" prompt engineering.
-    *   **Evidence:** It uses context memory (SQLite) to understand "show me cheaper ones" refers to previous context. It greets, adapts tone, and speaks 3+ languages.
+    *   **Implementation:** System prompt enforces a "Friendly Sales Consultant" persona.
+    *   **Specific Evidence:**
+        *   **Context Memory:** Uses `SqliteSaver` to remember "show me cheaper ones" refers to the previous search.
+        *   **Targeted Questions:** Agent follows a strict rule: *"Ask max 2-3 questions in a short, numbered list"* (e.g., Budget? Gearbox?).
+        *   **Multilingual:** Speaks English, Dutch, and Spanish natively.
 
 ### Slide 5: The "ReAct" Engine (Reasoning + Acting)
-*   **Focus:** How it thinks.
+*   **Focus:** How it thinks (Scenario A & B).
 *   **Content:**
-    *   Explaining the "Loop": Think -> Act -> Observe.
-    *   **Step 1:** User asks vague question ("I need a truck").
-    *   **Step 2:** Agent pauses, asks clarifying questions (Budget? Usage?).
-    *   **Step 3:** Agent updates filters and executes precise search.
-    *   *Why this matters:* It mirrors a top sales rep's behavior.
+    *   **Scenario A (Vague):** User says "I need a truck" -> Agent pauses -> Asks for Budget -> Maps "International" to `4x2`, `Sleeper`.
+    *   **Scenario B (Specific):** User says "Volvo FH, 500HP, Euro 6" -> Agent extracts exact JSON Entities.
+    *   **Why this matters:** It mirrors a top sales rep's behavior: asking before selling.
 
 ### Slide 6: Structured Search & Fault Tolerance (Tech Deep Dive)
-*   **Focus:** Handling data reality.
+*   **Focus:** Handling data reality & "Structured Filters".
 *   **Content:**
-    *   **Smart Mapping:** Translates "Comfortable" -> `Cabin IN ('Globetrotter', 'Highline', 'Sleeper')`.
-    *   **Fault Tolerance:** How we handled the "Missing Airco Data" bug. Instead of blindly filtering (which returns 0 results), we infer features from models.
+    *   **Smart Mapping:** Translates natural language like "Comfortable" -> `Cabin IN ('Globetrotter', 'Highline', 'Sleeper')` (mapped 18+ filters).
+    *   **Fault Tolerance:** Proactive fix for the "Missing Airco Data" bug. We infer features from models instead of blindly filtering.
     *   **Result:** 100% accurate matches, zero "hallucinated" trucks.
+    *   **Verification:** Meets "Searches using structured filters" requirement perfectly.
 
 ### Slide 7: Scenario Demo: The "Advisory" Search
 *   **Focus:** Proving the "Advice" requirement (Scenario D).
 *   **Content:**
     *   *User:* "What do you advise for heavy construction?"
-    *   **Agent Logic:** Uses internal Domain Knowledge (6x4 Axle, High HP).
+    *   **Agent Logic:** Bypasses search tool initially. Uses **Domain Knowledge** sections in the prompt (e.g., "Heavy loads = 6x4, 500+ HP").
     *   **Outcome:** Explains *Why* (Consultative) before showing *What* (Product).
-    *   *Differentiation:* It doesn't just search; it teaches.
+    *   **Differentiation:** It doesn't just search; it teaches.
 
 ### Slide 8: Premium User Experience (The "Wow" Factor)
-*   **Focus:** Frontend polish.
+*   **Focus:** Frontend polish & Explainability.
 *   **Visual:** Screenshot of the "Visual Brand Grid" and "Vehicle Cards".
 *   **Content:**
-    *   Typing indicators for realism.
-    *   Glassmorphism UI.
+    *   **Explainable AI:** Every card includes a "Why this fits" highlight (e.g., "This DAF has low mileage").
+    *   Glassmorphism UI with typing indicators.
     *   Interactive Sidebar that syncs with AI.
     *   "360° Verified" badges for trust.
 
 ### Slide 9: Infrastructure & Deployment
 *   **Focus:** Professional delivery.
 *   **Content:**
-    *   **Terraform:** One-click infrastructure (IaC).
-    *   **Docker:** Containerized for consistency.
+    *   **Terraform:** One-click infrastructure (IaC) defining VPC, ECS Cluster, and Security Groups.
+    *   **Docker:** Containerized for consistency (local vs production).
     *   **GitHub:** Clean, structured codebase ready for handover.
 
 ### Slide 10: Conclusion & Future Roadmap
@@ -89,6 +91,6 @@
 ---
 
 ## Instructions for GenSpark
+*   **CRITICAL:** For each slide, pull the technical "Evidence" points directly from the uploaded `solution_verification.md` file.
 *   Use screenshots of modern SaaS dashboards or dark-themed UI.
-*   Keep text minimal (bullet points), focus on **visual impact**.
-*   Use the "Evidence" points from the `solution_verification.md` file I uploaded to validate claims.
+*   Focus on **visual impact** but ensure the **Scenario Logic** (A, B, D) is clearly explained in the text.
