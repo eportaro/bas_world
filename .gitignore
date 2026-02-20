@@ -42,3 +42,14 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Presentation (Excluded)
+pres_basworld/
+
+# Temporary Scripts
+fix_slides.py
+verify_prompt.py
+
+# Database Journal Files
+data/memory.db-shm
+data/memory.db-wal
